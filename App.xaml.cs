@@ -1,13 +1,6 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Net.Sockets;
+﻿using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Forms;
 using Application = System.Windows.Application;
 
 namespace IPPopper
@@ -37,16 +30,16 @@ namespace IPPopper
         private void CreateNotifyIcon()
         {
             _notifyIcon = new NotifyIcon();
-            
+
             // Load embedded icon
             try
             {
-                var assembly = Assembly.GetExecutingAssembly();
-                
+                Assembly assembly = Assembly.GetExecutingAssembly();
+
                 // The embedded resource name follows the pattern: Namespace.FileName
-                var iconResourceName = "IPPopper.IPPopper.ico";
-                
-                using var iconStream = assembly.GetManifestResourceStream(iconResourceName);
+                string iconResourceName = "IPPopper.IPPopper.ico";
+
+                using Stream? iconStream = assembly.GetManifestResourceStream(iconResourceName);
                 if (iconStream != null)
                 {
                     _notifyIcon.Icon = new Icon(iconStream);
@@ -54,12 +47,12 @@ namespace IPPopper
                 else
                 {
                     // If the exact name doesn't work, try to find it dynamically
-                    var resourceNames = assembly.GetManifestResourceNames();
-                    var iconResource = resourceNames.FirstOrDefault(name => name.EndsWith("IPPopper.ico"));
-                    
+                    string[] resourceNames = assembly.GetManifestResourceNames();
+                    string? iconResource = resourceNames.FirstOrDefault(name => name.EndsWith("IPPopper.ico"));
+
                     if (iconResource != null)
                     {
-                        using var stream = assembly.GetManifestResourceStream(iconResource);
+                        using Stream? stream = assembly.GetManifestResourceStream(iconResource);
                         if (stream != null)
                         {
                             _notifyIcon.Icon = new Icon(stream);
@@ -89,7 +82,7 @@ namespace IPPopper
             _notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
 
             // Create context menu
-            var contextMenu = new ContextMenuStrip();
+            ContextMenuStrip contextMenu = new ContextMenuStrip();
             contextMenu.Items.Add("Show", null, ShowWindow_Click);
             contextMenu.Items.Add("Quit", null, Quit_Click);
             _notifyIcon.ContextMenuStrip = contextMenu;
@@ -107,14 +100,14 @@ namespace IPPopper
         {
             if (_ipService != null && _notifyIcon != null)
             {
-                var primaryIP = await _ipService.GetPrimaryLocalIPAsync();
+                string primaryIP = await _ipService.GetPrimaryLocalIPAsync();
                 _notifyIcon.Text = $"IPPopper - {primaryIP}";
             }
         }
 
         private void ShowWindow_Click(object? sender, EventArgs e)
         {
-            var mainWindow = new MainWindow(_ipService!);
+            MainWindow mainWindow = new MainWindow(_ipService!);
             mainWindow.Show();
             mainWindow.Activate();
         }

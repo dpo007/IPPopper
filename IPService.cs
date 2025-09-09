@@ -11,22 +11,23 @@ namespace IPPopper
         public string Type { get; set; } = string.Empty;
         public bool IsPrimary { get; set; }
         public string InterfaceName { get; set; } = string.Empty;
+        public string MacAddress { get; set; } = string.Empty;
     }
 
     public class IPService
     {
         public async Task<List<IPInfo>> GetAllIPAddressesAsync()
         {
-            var ipList = new List<IPInfo>();
-            
+            List<IPInfo> ipList = new List<IPInfo>();
+
             // Get local IP addresses
-            var localIPs = GetLocalIPAddresses();
+            List<IPInfo> localIPs = GetLocalIPAddresses();
             ipList.AddRange(localIPs);
 
             // Get external IP address
             try
             {
-                var externalIP = await GetExternalIPAddressAsync();
+                string externalIP = await GetExternalIPAddressAsync();
                 if (!string.IsNullOrEmpty(externalIP))
                 {
                     ipList.Add(new IPInfo
@@ -34,7 +35,8 @@ namespace IPPopper
                         Address = externalIP,
                         Type = "External/Public",
                         IsPrimary = false,
-                        InterfaceName = "Internet"
+                        InterfaceName = "Internet",
+                        MacAddress = "N/A"
                     });
                 }
             }
@@ -46,7 +48,8 @@ namespace IPPopper
                     Address = "Unable to determine",
                     Type = "External/Public",
                     IsPrimary = false,
-                    InterfaceName = "Internet"
+                    InterfaceName = "Internet",
+                    MacAddress = "N/A"
                 });
             }
 
@@ -56,34 +59,37 @@ namespace IPPopper
         public async Task<string> GetPrimaryLocalIPAsync()
         {
             await Task.CompletedTask; // Fix async warning
-            var localIPs = GetLocalIPAddresses();
-            var primary = localIPs.FirstOrDefault(ip => ip.IsPrimary);
+            List<IPInfo> localIPs = GetLocalIPAddresses();
+            IPInfo? primary = localIPs.FirstOrDefault(ip => ip.IsPrimary);
             return primary?.Address ?? "No IP found";
         }
 
         private List<IPInfo> GetLocalIPAddresses()
         {
-            var ipList = new List<IPInfo>();
-            var primaryIP = GetPrimaryIPAddress();
+            List<IPInfo> ipList = new List<IPInfo>();
+            string primaryIP = GetPrimaryIPAddress();
 
-            foreach (var networkInterface in NetworkInterface.GetAllNetworkInterfaces())
+            foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces())
             {
                 if (networkInterface.OperationalStatus == OperationalStatus.Up &&
                     networkInterface.NetworkInterfaceType != NetworkInterfaceType.Loopback)
                 {
-                    foreach (var addressInfo in networkInterface.GetIPProperties().UnicastAddresses)
+                    string macAddress = GetMacAddress(networkInterface);
+
+                    foreach (UnicastIPAddressInformation addressInfo in networkInterface.GetIPProperties().UnicastAddresses)
                     {
                         if (addressInfo.Address.AddressFamily == AddressFamily.InterNetwork)
                         {
-                            var address = addressInfo.Address.ToString();
-                            var isPrimary = address == primaryIP;
+                            string address = addressInfo.Address.ToString();
+                            bool isPrimary = address == primaryIP;
 
                             ipList.Add(new IPInfo
                             {
                                 Address = address,
                                 Type = GetNetworkType(address),
                                 IsPrimary = isPrimary,
-                                InterfaceName = networkInterface.Name
+                                InterfaceName = networkInterface.Name,
+                                MacAddress = macAddress
                             });
                         }
                     }
@@ -94,13 +100,31 @@ namespace IPPopper
             return ipList.OrderByDescending(ip => ip.IsPrimary).ToList();
         }
 
+        private string GetMacAddress(NetworkInterface networkInterface)
+        {
+            try
+            {
+                byte[] macBytes = networkInterface.GetPhysicalAddress().GetAddressBytes();
+                if (macBytes.Length == 0)
+                {
+                    return "N/A";
+                }
+
+                return string.Join(":", macBytes.Select(b => b.ToString("X2")));
+            }
+            catch
+            {
+                return "N/A";
+            }
+        }
+
         private string GetPrimaryIPAddress()
         {
             try
             {
-                using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
+                using Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, 0);
                 socket.Connect("8.8.8.8", 65530);
-                var endPoint = socket.LocalEndPoint as IPEndPoint;
+                IPEndPoint? endPoint = socket.LocalEndPoint as IPEndPoint;
                 return endPoint?.Address.ToString() ?? string.Empty;
             }
             catch
@@ -111,15 +135,15 @@ namespace IPPopper
 
         private string GetNetworkType(string ipAddress)
         {
-            if (ipAddress.StartsWith("192.168.") || 
+            if (ipAddress.StartsWith("192.168.") ||
                 ipAddress.StartsWith("10.") ||
-                (ipAddress.StartsWith("172.") && 
-                 int.TryParse(ipAddress.Split('.')[1], out int second) && 
+                (ipAddress.StartsWith("172.") &&
+                 int.TryParse(ipAddress.Split('.')[1], out int second) &&
                  second >= 16 && second <= 31))
             {
                 return "Private/LAN";
             }
-            
+
             if (ipAddress.StartsWith("169.254."))
             {
                 return "Link-Local";
@@ -130,7 +154,7 @@ namespace IPPopper
 
         private async Task<string> GetExternalIPAddressAsync()
         {
-            var services = new[]
+            string[] services = new[]
             {
                 "https://api.ipify.org",
                 "https://icanhazip.com",
@@ -138,16 +162,16 @@ namespace IPPopper
                 "https://myexternalip.com/raw"
             };
 
-            using var client = new HttpClient();
+            using HttpClient client = new HttpClient();
             client.Timeout = TimeSpan.FromSeconds(10);
 
-            foreach (var service in services)
+            foreach (string? service in services)
             {
                 try
                 {
-                    var response = await client.GetStringAsync(service);
-                    var ip = response.Trim();
-                    
+                    string response = await client.GetStringAsync(service);
+                    string ip = response.Trim();
+
                     // Validate it's a proper IP address
                     if (IPAddress.TryParse(ip, out _))
                     {

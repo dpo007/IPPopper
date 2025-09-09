@@ -1,15 +1,7 @@
 ﻿using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using MessageBox = System.Windows.MessageBox;
 using Clipboard = System.Windows.Clipboard;
+using MessageBox = System.Windows.MessageBox;
 
 namespace IPPopper
 {
@@ -38,17 +30,17 @@ namespace IPPopper
 
                 // Get IP addresses
                 _currentIPs = await _ipService.GetAllIPAddressesAsync();
-                
+
                 // Update UI
                 IPDataGrid.ItemsSource = _currentIPs;
-                
+
                 // Update primary IP display
-                var primaryIP = _currentIPs.FirstOrDefault(ip => ip.IsPrimary);
+                IPInfo? primaryIP = _currentIPs.FirstOrDefault(ip => ip.IsPrimary);
                 PrimaryIPTextBlock.Text = primaryIP?.Address ?? "No primary IP found";
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading IP addresses: {ex.Message}", "Error", 
+                MessageBox.Show($"Error loading IP addresses: {ex.Message}", "Error",
                                MessageBoxButton.OK, MessageBoxImage.Error);
                 PrimaryIPTextBlock.Text = "Error loading IPs";
             }
@@ -56,7 +48,7 @@ namespace IPPopper
 
         private void CopyPrimaryButton_Click(object sender, RoutedEventArgs e)
         {
-            var primaryIP = _currentIPs.FirstOrDefault(ip => ip.IsPrimary);
+            IPInfo? primaryIP = _currentIPs.FirstOrDefault(ip => ip.IsPrimary);
             if (primaryIP != null)
             {
                 Clipboard.SetText(primaryIP.Address);
@@ -64,7 +56,7 @@ namespace IPPopper
             }
             else
             {
-                MessageBox.Show("No primary IP address found.", "Information", 
+                MessageBox.Show("No primary IP address found.", "Information",
                                MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
@@ -73,27 +65,27 @@ namespace IPPopper
         {
             if (_currentIPs.Count == 0)
             {
-                MessageBox.Show("No IP addresses to copy.", "Information", 
+                MessageBox.Show("No IP addresses to copy.", "Information",
                                MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             sb.AppendLine("IP Address Information");
             sb.AppendLine("========================");
             sb.AppendLine();
 
             // Group by type
-            var localIPs = _currentIPs.Where(ip => ip.Type.Contains("LAN") || ip.Type.Contains("Private") || ip.Type.Contains("Link-Local")).ToList();
-            var externalIPs = _currentIPs.Where(ip => ip.Type.Contains("External") || ip.Type.Contains("Public")).ToList();
+            List<IPInfo> localIPs = _currentIPs.Where(ip => ip.Type.Contains("LAN") || ip.Type.Contains("Private") || ip.Type.Contains("Link-Local")).ToList();
+            List<IPInfo> externalIPs = _currentIPs.Where(ip => ip.Type.Contains("External") || ip.Type.Contains("Public")).ToList();
 
             if (localIPs.Count > 0)
             {
                 sb.AppendLine("Local/LAN IP Addresses:");
                 sb.AppendLine("------------------------");
-                foreach (var ip in localIPs)
+                foreach (IPInfo? ip in localIPs)
                 {
-                    sb.AppendLine($"{ip.Address} ({ip.Type}) - {ip.InterfaceName}{(ip.IsPrimary ? " [PRIMARY]" : "")}");
+                    sb.AppendLine($"{ip.Address} - MAC: {ip.MacAddress} ({ip.Type}) - {ip.InterfaceName}{(ip.IsPrimary ? " [PRIMARY]" : "")}");
                 }
                 sb.AppendLine();
             }
@@ -102,7 +94,7 @@ namespace IPPopper
             {
                 sb.AppendLine("External/Public IP Addresses:");
                 sb.AppendLine("-----------------------------");
-                foreach (var ip in externalIPs)
+                foreach (IPInfo? ip in externalIPs)
                 {
                     sb.AppendLine($"{ip.Address} ({ip.Type})");
                 }
@@ -124,7 +116,7 @@ namespace IPPopper
 
         private async void ShowTemporaryMessage(string message)
         {
-            var originalTitle = Title;
+            string originalTitle = Title;
             Title = message;
             await Task.Delay(2000);
             Title = originalTitle;

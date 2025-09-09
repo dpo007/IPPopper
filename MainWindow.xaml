@@ -39,8 +39,9 @@
                   CanUserSortColumns="False"
                   Margin="0,0,0,15">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="IP Address" Binding="{Binding Address}" Width="150"/>
-                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="120"/>
+                <DataGridTextColumn Header="IP Address" Binding="{Binding Address}" Width="130"/>
+                <DataGridTextColumn Header="MAC Address" Binding="{Binding MacAddress}" Width="140"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="100"/>
                 <DataGridTextColumn Header="Interface" Binding="{Binding InterfaceName}" Width="*"/>
                 <DataGridTextColumn Header="Primary" Binding="{Binding IsPrimary}" Width="60"/>
             </DataGrid.Columns>
