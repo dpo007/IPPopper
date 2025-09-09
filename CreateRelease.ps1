@@ -364,4 +364,6 @@ Write-Host "  • New switches: -SkipUninstall, -UninstallOnly" -ForegroundColor
 
 Write-Host "`nDone!" -ForegroundColor Green
 
-pause
+Write-Host "Press any key to exit..."
+$x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+exit 0
