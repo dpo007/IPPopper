@@ -220,3 +220,5 @@ Write-Host "  • Configures automatic startup for all users" -ForegroundColor G
 Write-Host "  • Requires .NET 9 Runtime on target machine" -ForegroundColor Gray
 
 Write-Host "`nDone!" -ForegroundColor Green
+
+pause
