@@ -43,8 +43,10 @@ internal static class NotificationHelper
                 {
                     Title = title,
                     Message = message,
-                    Type = type
-                });
+                    Type = type,
+                },
+                expirationTime: TimeSpan.FromSeconds(3)
+                );
         }
         catch (ArgumentException ex)
         {

@@ -89,11 +89,11 @@
                     Padding="15,5"
                     Margin="10,0,10,0"
                     Click="RefreshButton_Click" />
-            <Button x:Name="CloseButton"
-                    Content="Close"
+            <Button x:Name="HideButton"
+                    Content="Hide"
                     Padding="15,5"
                     Margin="10,0,0,0"
-                    Click="CloseButton_Click" />
+                    Click="HideButton_Click" />
         </StackPanel>
     </Grid>
 </Window>

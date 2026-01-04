@@ -113,9 +113,9 @@ namespace IPPopper
             LoadIPAddresses();
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private void HideButton_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            Hide();
         }
 
         protected override void OnClosed(EventArgs e)
