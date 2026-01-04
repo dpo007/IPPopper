@@ -9,9 +9,14 @@ internal static class NotificationHelper
     private static readonly NotificationManager _manager = new();
     private static Window? _hostWindow;
 
-    public static void ShowCopied()
+    public static void ShowCopiedPrimaryIP()
     {
-        Show("IPPopper", "Copied", NotificationType.Success);
+        Show("IPPopper", "Copied Primary IP to clipboard.", NotificationType.Information);
+    }
+
+    public static void ShowCopiedAllIPs()
+    {
+        Show("IPPopper", "Copied IP address report to clipboard.", NotificationType.Information);
     }
 
     public static void Show(string title, string message, NotificationType type)

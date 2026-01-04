@@ -54,6 +54,7 @@ namespace IPPopper
             if (primaryIP != null)
             {
                 Clipboard.SetText(primaryIP.Address);
+                NotificationHelper.ShowCopiedPrimaryIP();
                 ShowTemporaryMessage("Primary IP copied to clipboard!");
             }
             else
@@ -73,8 +74,9 @@ namespace IPPopper
             }
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("IP Address Information");
-            sb.AppendLine("========================");
+            string header = $"IP Address Information - {Environment.MachineName}";
+            sb.AppendLine(header);
+            sb.AppendLine(new string('=', header.Length));
             sb.AppendLine();
 
             // Group by type
@@ -84,7 +86,7 @@ namespace IPPopper
             if (localIPs.Count > 0)
             {
                 sb.AppendLine("Local/LAN IP Addresses:");
-                sb.AppendLine("------------------------");
+                sb.AppendLine("-----------------------");
                 foreach (IPInfo? ip in localIPs)
                 {
                     sb.AppendLine($"{ip.Address} - MAC: {ip.MacAddress} ({ip.Type}) - {ip.InterfaceName}{(ip.IsPrimary ? " [PRIMARY]" : "")}");
@@ -103,6 +105,7 @@ namespace IPPopper
             }
 
             Clipboard.SetText(sb.ToString());
+            NotificationHelper.ShowCopiedAllIPs();
             ShowTemporaryMessage("All IP information copied to clipboard!");
         }
 

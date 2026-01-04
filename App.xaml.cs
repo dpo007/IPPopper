@@ -120,7 +120,7 @@ namespace IPPopper
 
             System.Windows.Clipboard.SetText(primaryIP);
 
-            NotificationHelper.ShowCopied();
+            NotificationHelper.ShowCopiedPrimaryIP();
         }
 
         private void Quit_Click(object? sender, EventArgs e)
