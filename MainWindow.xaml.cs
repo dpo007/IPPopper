@@ -16,7 +16,8 @@ namespace IPPopper
         {
             InitializeComponent();
 
-            // Set header with computer name
+            // Set title and header with computer name
+            Title = $"IP Popper - IP Address Information - {Environment.MachineName}";
             HeaderTextBlock.Text = $"Current IP Addresses on {Environment.MachineName}";
 
             LoadIPAddresses();
@@ -55,7 +56,6 @@ namespace IPPopper
             {
                 Clipboard.SetText(primaryIP.Address);
                 NotificationHelper.ShowCopiedPrimaryIP();
-                ShowTemporaryMessage("Primary IP copied to clipboard!");
             }
             else
             {
@@ -106,7 +106,6 @@ namespace IPPopper
 
             Clipboard.SetText(sb.ToString());
             NotificationHelper.ShowCopiedAllIPs();
-            ShowTemporaryMessage("All IP information copied to clipboard!");
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
@@ -117,14 +116,6 @@ namespace IPPopper
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private async void ShowTemporaryMessage(string message)
-        {
-            string originalTitle = Title;
-            Title = message;
-            await Task.Delay(2000);
-            Title = originalTitle;
         }
 
         protected override void OnClosed(EventArgs e)

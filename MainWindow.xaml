@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:IPPopper"
         mc:Ignorable="d"
-        Title="IP Popper - IP Address Information"
+        Title="IPPopper - IP Address Information"
         Height="500" Width="600"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
