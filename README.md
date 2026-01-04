@@ -2,12 +2,13 @@
 
 ## Features
 - Runs in background with system tray icon
-- Shows primary IP in tooltip when hovering over tray icon
-- Right-click context menu with "Show" and "Quit" options
+- Shows primary IP and computer name in tooltip when hovering over tray icon
+- Right-click context menu with "Show", "Copy IP", and "Quit" options
 - Double-click system tray icon to show window
-- Display window shows all IP addresses (local and external) **with MAC addresses**
+- Display window shows computer name in header and all IP addresses (local and external) **with MAC addresses**
 - Primary LAN IP is highlighted in green and marked as primary
 - Copy buttons to copy primary IP or all IP information (including MAC addresses)
+- Quick "Copy IP" option in system tray context menu
 - Refresh button to update IP addresses
 - Window opens centered on current display
 
@@ -71,10 +72,14 @@ The Release build creates a **framework-dependent deployment**:
 3. **Manual Launch**: Use Start Menu shortcut or run `C:\IPPopper\IPPopper.exe`
 4. **System Tray**: Look for the IPPopper icon near the clock
 5. **View Network Info**: 
-   - **Hover** over icon to see primary IP address
+   - **Hover** over icon to see primary IP address and computer name
    - **Double-click** icon to open the network information window
-   - **Right-click** for context menu ("Show" and "Quit" options)
+   - **Right-click** for context menu:
+     - **Show** - Open the network information window
+     - **Copy IP** - Quickly copy primary IP address to clipboard
+     - **Quit** - Exit the application
 6. **Network Information Window**:
+   - Header displays computer name
    - View all detected IP addresses (local and external)
    - **MAC addresses** displayed for each network adapter
    - Primary IP highlighted in green and marked as "Primary"
