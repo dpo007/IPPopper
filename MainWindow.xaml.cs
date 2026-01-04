@@ -10,13 +10,11 @@ namespace IPPopper
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IPService _ipService;
         private List<IPInfo> _currentIPs = new();
 
-        public MainWindow(IPService ipService)
+        public MainWindow()
         {
             InitializeComponent();
-            _ipService = ipService;
 
             // Set header with computer name
             HeaderTextBlock.Text = $"Current IP Addresses on {Environment.MachineName}";
@@ -33,7 +31,7 @@ namespace IPPopper
                 PrimaryIPTextBlock.Text = "Loading...";
 
                 // Get IP addresses
-                _currentIPs = await _ipService.GetAllIPAddressesAsync();
+                _currentIPs = await IPService.GetAllIPAddressesAsync();
 
                 // Update UI
                 IPDataGrid.ItemsSource = _currentIPs;

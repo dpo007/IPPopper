@@ -11,14 +11,10 @@ namespace IPPopper
     public partial class App : Application
     {
         private NotifyIcon? _notifyIcon;
-        private IPService? _ipService;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
-            // Initialize IP service
-            _ipService = new IPService();
 
             // Create system tray icon
             CreateNotifyIcon();
@@ -100,28 +96,23 @@ namespace IPPopper
 
         private async void UpdateTooltip()
         {
-            if (_ipService != null && _notifyIcon != null)
+            if (_notifyIcon != null)
             {
-                string primaryIP = await _ipService.GetPrimaryLocalIPAsync();
+                string primaryIP = await IPService.GetPrimaryLocalIPAsync();
                 _notifyIcon.Text = $"IPPopper ({Environment.MachineName}) - {primaryIP}";
             }
         }
 
         private void ShowWindow_Click(object? sender, EventArgs e)
         {
-            MainWindow mainWindow = new MainWindow(_ipService!);
+            MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
             mainWindow.Activate();
         }
 
         private async void CopyIP_Click(object? sender, EventArgs e)
         {
-            if (_ipService == null)
-            {
-                return;
-            }
-
-            string primaryIP = await _ipService.GetPrimaryLocalIPAsync();
+            string primaryIP = await IPService.GetPrimaryLocalIPAsync();
             if (string.IsNullOrWhiteSpace(primaryIP))
             {
                 return;

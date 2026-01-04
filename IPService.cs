@@ -16,7 +16,7 @@ namespace IPPopper
 
     public class IPService
     {
-        public async Task<List<IPInfo>> GetAllIPAddressesAsync()
+        public static async Task<List<IPInfo>> GetAllIPAddressesAsync()
         {
             List<IPInfo> ipList = new List<IPInfo>();
 
@@ -56,7 +56,7 @@ namespace IPPopper
             return ipList;
         }
 
-        public async Task<string> GetPrimaryLocalIPAsync()
+        public static async Task<string> GetPrimaryLocalIPAsync()
         {
             await Task.CompletedTask; // Fix async warning
             List<IPInfo> localIPs = GetLocalIPAddresses();
@@ -64,7 +64,7 @@ namespace IPPopper
             return primary?.Address ?? "No IP found";
         }
 
-        private List<IPInfo> GetLocalIPAddresses()
+        private static List<IPInfo> GetLocalIPAddresses()
         {
             List<IPInfo> ipList = new List<IPInfo>();
             string primaryIP = GetPrimaryIPAddress();
@@ -100,7 +100,7 @@ namespace IPPopper
             return ipList.OrderByDescending(ip => ip.IsPrimary).ToList();
         }
 
-        private string GetMacAddress(NetworkInterface networkInterface)
+        private static string GetMacAddress(NetworkInterface networkInterface)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace IPPopper
             }
         }
 
-        private string GetPrimaryIPAddress()
+        private static string GetPrimaryIPAddress()
         {
             try
             {
@@ -133,7 +133,7 @@ namespace IPPopper
             }
         }
 
-        private string GetNetworkType(string ipAddress)
+        private static string GetNetworkType(string ipAddress)
         {
             if (ipAddress.StartsWith("192.168.") ||
                 ipAddress.StartsWith("10.") ||
@@ -152,7 +152,7 @@ namespace IPPopper
             return "Public/Routable";
         }
 
-        private async Task<string> GetExternalIPAddressAsync()
+        private static async Task<string> GetExternalIPAddressAsync()
         {
             string[] services = new[]
             {
