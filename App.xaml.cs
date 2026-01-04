@@ -128,6 +128,8 @@ namespace IPPopper
             }
 
             System.Windows.Clipboard.SetText(primaryIP);
+
+            NotificationHelper.ShowCopied();
         }
 
         private void Quit_Click(object? sender, EventArgs e)
