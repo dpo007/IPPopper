@@ -80,8 +80,14 @@ namespace IPPopper
             sb.AppendLine();
 
             // Group by type
-            List<IPInfo> localIPs = _currentIPs.Where(ip => ip.Type.Contains("LAN") || ip.Type.Contains("Private") || ip.Type.Contains("Link-Local")).ToList();
-            List<IPInfo> externalIPs = _currentIPs.Where(ip => ip.Type.Contains("External") || ip.Type.Contains("Public")).ToList();
+            List<IPInfo> localIPs = _currentIPs
+                .Where(ip => ip.Type.StartsWith("Local", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            List<IPInfo> externalIPs = _currentIPs
+                .Where(ip => ip.Type.StartsWith("External", StringComparison.OrdinalIgnoreCase) ||
+                            ip.Type.StartsWith("Public", StringComparison.OrdinalIgnoreCase))
+                .ToList();
 
             if (localIPs.Count > 0)
             {

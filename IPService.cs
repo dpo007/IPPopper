@@ -86,7 +86,7 @@ namespace IPPopper
                             ipList.Add(new IPInfo
                             {
                                 Address = address,
-                                Type = GetNetworkType(address),
+                                Type = GetNetworkType(networkInterface, addressInfo),
                                 IsPrimary = isPrimary,
                                 InterfaceName = networkInterface.Name,
                                 MacAddress = macAddress
@@ -133,34 +133,105 @@ namespace IPPopper
             }
         }
 
-        private static string GetNetworkType(string ipAddress)
+        private static string GetNetworkType(NetworkInterface networkInterface, UnicastIPAddressInformation addressInfo)
         {
-            if (ipAddress.StartsWith("192.168.") ||
-                ipAddress.StartsWith("10.") ||
-                (ipAddress.StartsWith("172.") &&
-                 int.TryParse(ipAddress.Split('.')[1], out int second) &&
-                 second >= 16 && second <= 31))
+            IPAddress ipAddress = addressInfo.Address;
+
+            if (IPAddress.IsLoopback(ipAddress))
             {
-                return "Private/LAN";
+                return "Local/Loopback";
             }
 
-            if (ipAddress.StartsWith("169.254."))
+            if (IsLinkLocal(ipAddress))
             {
-                return "Link-Local";
+                return "Local/Link-Local";
             }
 
-            return "Public/Routable";
+            if (IsVpnInterface(networkInterface))
+            {
+                return "Local/VPN";
+            }
+
+            if (IsPrivateAddress(ipAddress) || IsCarrierGradeNat(ipAddress))
+            {
+                return "Local/LAN";
+            }
+
+            return "Local/Public";
+        }
+
+        private static bool IsPrivateAddress(IPAddress ipAddress)
+        {
+            byte[] bytes = ipAddress.GetAddressBytes();
+            if (bytes.Length != 4)
+            {
+                return false;
+            }
+
+            if (bytes[0] == 10)
+            {
+                return true;
+            }
+
+            if (bytes[0] == 192 && bytes[1] == 168)
+            {
+                return true;
+            }
+
+            if (bytes[0] == 172 && bytes[1] >= 16 && bytes[1] <= 31)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool IsCarrierGradeNat(IPAddress ipAddress)
+        {
+            byte[] bytes = ipAddress.GetAddressBytes();
+            if (bytes.Length != 4)
+            {
+                return false;
+            }
+
+            return bytes[0] == 100 && bytes[1] >= 64 && bytes[1] <= 127;
+        }
+
+        private static bool IsLinkLocal(IPAddress ipAddress)
+        {
+            byte[] bytes = ipAddress.GetAddressBytes();
+            if (bytes.Length != 4)
+            {
+                return false;
+            }
+
+            return bytes[0] == 169 && bytes[1] == 254;
+        }
+
+        private static bool IsVpnInterface(NetworkInterface networkInterface)
+        {
+            if (networkInterface.NetworkInterfaceType == NetworkInterfaceType.Tunnel ||
+                networkInterface.NetworkInterfaceType == NetworkInterfaceType.Ppp)
+            {
+                return true;
+            }
+
+            string name = networkInterface.Name;
+            string description = networkInterface.Description;
+
+            return name.Contains("vpn", StringComparison.OrdinalIgnoreCase) ||
+                   description.Contains("vpn", StringComparison.OrdinalIgnoreCase);
         }
 
         private static async Task<string> GetExternalIPAddressAsync()
         {
-            string[] services = new[]
-            {
+            string[] services =
+            [
                 "https://api.ipify.org",
                 "https://icanhazip.com",
                 "https://ipecho.net/plain",
                 "https://myexternalip.com/raw"
-            };
+            ];
 
             using HttpClient client = new HttpClient();
             client.Timeout = TimeSpan.FromSeconds(10);
