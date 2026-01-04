@@ -17,6 +17,10 @@ namespace IPPopper
         {
             InitializeComponent();
             _ipService = ipService;
+
+            // Set header with computer name
+            HeaderTextBlock.Text = $"Current IP Addresses on {Environment.MachineName}";
+
             LoadIPAddresses();
         }
 
