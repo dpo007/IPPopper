@@ -103,7 +103,7 @@ namespace IPPopper
             if (_ipService != null && _notifyIcon != null)
             {
                 string primaryIP = await _ipService.GetPrimaryLocalIPAsync();
-                _notifyIcon.Text = $"IPPopper - {primaryIP}";
+                _notifyIcon.Text = $"IPPopper ({Environment.MachineName}) - {primaryIP}";
             }
         }
 
