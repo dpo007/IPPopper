@@ -259,10 +259,41 @@ if (Test-Path $TargetPath) {
 
 # Copy files
 Write-Host "Copying IPPopper files..." -ForegroundColor Yellow
-$sourceFiles = Get-ChildItem "IPPopperInstallFiles" -File
-foreach ($file in $sourceFiles) {
-    Copy-Item $file.FullName $TargetPath -Force
-    Write-Host "  [OK] $($file.Name)" -ForegroundColor Gray
+
+# Resolve source relative to the script location
+$sourceDir = Join-Path $PSScriptRoot "IPPopperInstallFiles"
+
+if (-not (Test-Path $sourceDir)) {
+    Write-Host "[ERROR] Source folder not found: $sourceDir" -ForegroundColor Red
+    Write-Host "Make sure 'IPPopperInstallFiles' is in the same folder as Install-IPPopper.ps1" -ForegroundColor Yellow
+    exit 1
+}
+
+# Enumerate contents (fail fast if empty)
+$itemsToCopy = Get-ChildItem -Path $sourceDir -Recurse -Force -ErrorAction Stop
+if (-not $itemsToCopy -or $itemsToCopy.Count -eq 0) {
+    Write-Host "[ERROR] Source folder exists but contains no files: $sourceDir" -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "Source: $sourceDir" -ForegroundColor Gray
+Write-Host "Target: $TargetPath" -ForegroundColor Gray
+
+# Ensure target exists and is clean
+if (Test-Path $TargetPath) {
+    Write-Host "Target directory exists, removing old files..." -ForegroundColor Gray
+    Remove-Item (Join-Path $TargetPath "*") -Recurse -Force -ErrorAction SilentlyContinue
+} else {
+    New-Item -ItemType Directory -Path $TargetPath -Force | Out-Null
+}
+
+# Copy everything (files + subfolders)
+try {
+    Copy-Item -Path (Join-Path $sourceDir "*") -Destination $TargetPath -Recurse -Force -ErrorAction Stop
+    Write-Host "[OK] Copied $($itemsToCopy.Count) item(s) into $TargetPath" -ForegroundColor Green
+} catch {
+    Write-Host "[ERROR] Copy failed: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
 }
 
 # Configure startup for all users
