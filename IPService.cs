@@ -18,7 +18,7 @@ namespace IPPopper
     {
         public static async Task<List<IPInfo>> GetAllIPAddressesAsync()
         {
-            List<IPInfo> ipList = new List<IPInfo>();
+            List<IPInfo> ipList = [];
 
             // Get local IP addresses
             List<IPInfo> localIPs = GetLocalIPAddresses();
@@ -66,7 +66,7 @@ namespace IPPopper
 
         private static List<IPInfo> GetLocalIPAddresses()
         {
-            List<IPInfo> ipList = new List<IPInfo>();
+            List<IPInfo> ipList = [];
             string primaryIP = GetPrimaryIPAddress();
 
             foreach (NetworkInterface networkInterface in NetworkInterface.GetAllNetworkInterfaces())

@@ -10,7 +10,7 @@ namespace IPPopper
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<IPInfo> _currentIPs = new();
+        private List<IPInfo> _currentIPs = [];
 
         public MainWindow()
         {
