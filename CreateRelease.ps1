@@ -63,8 +63,7 @@ $installScript = @'
 param(
     [string]$TargetPath = "C:\IPPopper",
     [switch]$SkipUninstall,
-    [switch]$UninstallOnly,
-    [switch]$RunAfterInstall
+    [switch]$UninstallOnly
 )
 
 Write-Host "IPPopper Installation Script" -ForegroundColor Green
@@ -87,7 +86,6 @@ if (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
     Write-Host "Available switches:" -ForegroundColor Cyan
     Write-Host "  -SkipUninstall    : Skip automatic uninstall of existing version" -ForegroundColor Gray
     Write-Host "  -UninstallOnly    : Only uninstall existing version and exit" -ForegroundColor Gray
-    Write-Host "  -RunAfterInstall  : Automatically start IPPopper after installation" -ForegroundColor Gray
     Write-Host
     Write-Host "Installation aborted." -ForegroundColor Red
     exit 1
@@ -218,7 +216,7 @@ function Uninstall-IPPopper {
 
 # Run uninstall if not skipped
 if (-not $SkipUninstall) {
-    $uninstallResult = Uninstall-IPPopper
+    $null = Uninstall-IPPopper
 }
 
 # Exit if UninstallOnly switch is used
@@ -248,16 +246,8 @@ try {
     Write-Host "Could not check .NET Runtime (dotnet command not found)" -ForegroundColor Yellow
 }
 
-# Create target directory
+# Copy files (and handle target directory cleanup here only — no duplicate cleanup block)
 Write-Host "`nInstalling to: $TargetPath" -ForegroundColor Yellow
-if (Test-Path $TargetPath) {
-    Write-Host "Target directory exists, removing old files..." -ForegroundColor Gray
-    Remove-Item "$TargetPath\*" -Force -ErrorAction SilentlyContinue
-} else {
-    New-Item -ItemType Directory -Path $TargetPath -Force | Out-Null
-}
-
-# Copy files
 Write-Host "Copying IPPopper files..." -ForegroundColor Yellow
 
 # Resolve source relative to the script location
@@ -301,6 +291,12 @@ Write-Host "`nConfiguring startup for all users..." -ForegroundColor Yellow
 $exePath = Join-Path $TargetPath "IPPopper.exe"
 $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
 
+if (-not (Test-Path $exePath)) {
+    Write-Host "[ERROR] Expected executable not found after copy: $exePath" -ForegroundColor Red
+    Write-Host "Check that IPPopper.exe exists inside: $sourceDir" -ForegroundColor Yellow
+    exit 1
+}
+
 try {
     Set-ItemProperty -Path $regPath -Name "IPPopper" -Value "`"$exePath`"" -Force
     Write-Host "[OK] Added to system startup (all users)" -ForegroundColor Green
@@ -333,26 +329,8 @@ Write-Host "`nInstallation completed!" -ForegroundColor Green
 Write-Host "IPPopper has been installed to: $TargetPath" -ForegroundColor White
 Write-Host "It will start automatically for all users on next login." -ForegroundColor Gray
 Write-Host
-Write-Host "To start IPPopper now, run: `"$exePath`"" -ForegroundColor Cyan
-
-# Start after install (switch) OR interactive prompt
-if ($RunAfterInstall) {
-    Write-Host "`n-RunAfterInstall specified. Launching IPPopper..." -ForegroundColor Cyan
-    try {
-        Start-Process $exePath
-        Write-Host "IPPopper started successfully." -ForegroundColor Green
-    } catch {
-        Write-Host "[ERROR] Failed to start IPPopper: $($_.Exception.Message)" -ForegroundColor Red
-    }
-}
-else {
-    $startNow = Read-Host "`nStart IPPopper now? (Y/n)"
-    if ($startNow -ne "n" -and $startNow -ne "N") {
-        Write-Host "Starting IPPopper..." -ForegroundColor Yellow
-        Start-Process $exePath
-        Write-Host "IPPopper started! Look for the icon in your system tray." -ForegroundColor Green
-    }
-}
+Write-Host "If you need to start it manually (as the signed-in user), run:" -ForegroundColor Cyan
+Write-Host "  `"$exePath`"" -ForegroundColor Cyan
 
 Write-Host
 Write-Host "==========================================" -ForegroundColor Cyan
