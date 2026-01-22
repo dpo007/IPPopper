@@ -16,6 +16,9 @@ namespace IPPopper
         {
             base.OnStartup(e);
 
+            // Apply system theme before showing any windows
+            ThemeManager.ApplySystemTheme();
+
             // Create system tray icon
             CreateNotifyIcon();
 
@@ -66,8 +69,6 @@ namespace IPPopper
             }
             catch (Exception ex)
             {
-                // Log the error for debugging
-                System.Diagnostics.Debug.WriteLine($"Failed to load embedded icon: {ex.Message}");
                 _notifyIcon.Icon = SystemIcons.Information;
             }
 

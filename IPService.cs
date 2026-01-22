@@ -58,7 +58,6 @@ namespace IPPopper
 
         public static async Task<string> GetPrimaryLocalIPAsync()
         {
-            await Task.CompletedTask; // Fix async warning
             List<IPInfo> localIPs = GetLocalIPAddresses();
             IPInfo? primary = localIPs.FirstOrDefault(ip => ip.IsPrimary);
             return primary?.Address ?? "No IP found";

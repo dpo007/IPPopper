@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Windows;
+using System.Windows.Input;
 using Clipboard = System.Windows.Clipboard;
 using MessageBox = System.Windows.MessageBox;
 
@@ -140,6 +141,12 @@ namespace IPPopper
 
         private void HideButton_Click(object sender, RoutedEventArgs e)
         {
+            // Check for Ctrl+Alt+Click to toggle theme
+            if ((Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt)) == (ModifierKeys.Control | ModifierKeys.Alt))
+            {
+                ThemeManager.ToggleTheme();
+                return;
+            }
             Hide();
         }
 
