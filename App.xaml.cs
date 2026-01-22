@@ -180,7 +180,7 @@ namespace IPPopper
             }
 
             System.Windows.Clipboard.SetText(machineName);
-            NotificationHelper.Show("IPPopper", $"Copied computer name: {machineName}", Notifications.Wpf.Core.NotificationType.Information);
+            NotificationHelper.ShowCopiedComputerName();
         }
 
         /// <summary>

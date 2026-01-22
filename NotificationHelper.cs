@@ -37,6 +37,14 @@ internal static class NotificationHelper
     }
 
     /// <summary>
+    /// Displays a notification indicating the computer name was copied to the clipboard.
+    /// </summary>
+    public static void ShowCopiedComputerName()
+    {
+        Show("IPPopper", "Copied computer name to clipboard.", NotificationType.Information);
+    }
+
+    /// <summary>
     /// Displays a toast notification with the specified title, message, and type.
     /// Automatically marshals to the UI thread if needed.
     /// </summary>
