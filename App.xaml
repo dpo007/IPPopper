@@ -6,6 +6,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- Default to LightTheme for design-time; will be replaced at runtime -->
                 <ResourceDictionary Source="Themes/LightTheme.xaml" />
+                <!-- Global tooltip style must be last so it wins over theme styles -->
+                <ResourceDictionary Source="Themes/ToolTips.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
