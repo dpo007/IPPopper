@@ -74,25 +74,35 @@
         <StackPanel Grid.Row="3"
                     Orientation="Horizontal"
                     HorizontalAlignment="Center">
+            <Button x:Name="CopyNameButton"
+                    Content="Copy Name"
+                    Padding="15,5"
+                    Margin="0,0,10,0"
+                    ToolTip="Copy this computer's name to the clipboard"
+                    Click="CopyNameButton_Click" />
             <Button x:Name="CopyPrimaryButton"
                     Content="Copy Primary IP"
                     Padding="15,5"
-                    Margin="0,0,10,0"
+                    Margin="10,0,10,0"
+                    ToolTip="Copy the primary local IP address to the clipboard"
                     Click="CopyPrimaryButton_Click" />
             <Button x:Name="CopyAllButton"
                     Content="Copy All IPs"
                     Padding="15,5"
                     Margin="10,0,10,0"
+                    ToolTip="Copy a formatted report of all detected IP addresses to the clipboard"
                     Click="CopyAllButton_Click" />
             <Button x:Name="RefreshButton"
                     Content="Refresh"
                     Padding="15,5"
                     Margin="10,0,10,0"
+                    ToolTip="Refresh the list of IP addresses"
                     Click="RefreshButton_Click" />
             <Button x:Name="HideButton"
                     Content="Hide"
                     Padding="15,5"
                     Margin="10,0,0,0"
+                    ToolTip="Hide this window (the app will continue running in the system tray)"
                     Click="HideButton_Click" />
         </StackPanel>
     </Grid>

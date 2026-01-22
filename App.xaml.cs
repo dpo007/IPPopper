@@ -80,6 +80,7 @@ namespace IPPopper
             // Create context menu
             ContextMenuStrip contextMenu = new ContextMenuStrip();
             contextMenu.Items.Add("Show", null, ShowWindow_Click);
+            contextMenu.Items.Add("Copy Name", null, CopyName_Click);
             contextMenu.Items.Add("Copy IP", null, CopyIP_Click);
             contextMenu.Items.Add(new ToolStripSeparator());
             contextMenu.Items.Add("Quit", null, Quit_Click);
@@ -121,6 +122,18 @@ namespace IPPopper
             System.Windows.Clipboard.SetText(primaryIP);
 
             NotificationHelper.ShowCopiedPrimaryIP();
+        }
+
+        private static void CopyName_Click(object? sender, EventArgs e)
+        {
+            string machineName = Environment.MachineName;
+            if (string.IsNullOrWhiteSpace(machineName))
+            {
+                return;
+            }
+
+            System.Windows.Clipboard.SetText(machineName);
+            NotificationHelper.Show("IPPopper", $"Copied computer name: {machineName}", Notifications.Wpf.Core.NotificationType.Information);
         }
 
         private void Quit_Click(object? sender, EventArgs e)

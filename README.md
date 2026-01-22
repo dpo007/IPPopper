@@ -3,12 +3,13 @@
 ## Features
 - Runs in background with system tray icon
 - Shows primary IP and computer name in tooltip when hovering over tray icon
-- Right-click context menu with "Show", "Copy IP", and "Quit" options
+- Right-click context menu with "Show", "Copy Name", "Copy IP", and "Quit" options
 - Double-click system tray icon to show window
 - Display window shows computer name in header and all IP addresses (local and external) **with MAC addresses**
 - Primary LAN IP is highlighted in green and marked as primary
-- Copy buttons to copy primary IP or all IP information (including MAC addresses)
+- Copy buttons to copy computer name, primary IP, or all IP information (including MAC addresses)
 - Quick "Copy IP" option in system tray context menu
+- Quick "Copy Name" option in system tray context menu
 - Refresh button to update IP addresses
 - Window opens centered on current display
 
@@ -76,6 +77,7 @@ The Release build creates a **framework-dependent deployment**:
    - **Double-click** icon to open the network information window
    - **Right-click** for context menu:
      - **Show** - Open the network information window
+     - **Copy Name** - Copy the computer name to clipboard
      - **Copy IP** - Quickly copy primary IP address to clipboard
      - **Quit** - Exit the application
 6. **Network Information Window**:
@@ -83,6 +85,7 @@ The Release build creates a **framework-dependent deployment**:
    - View all detected IP addresses (local and external)
    - **MAC addresses** displayed for each network adapter
    - Primary IP highlighted in green and marked as "Primary"
+   - **Copy Name** - Copy the computer name to clipboard
    - **Copy Primary IP** - Copy just the primary IP to clipboard
    - **Copy All Network Info** - Copy formatted list with IPs and MAC addresses
    - **Refresh** - Update network information

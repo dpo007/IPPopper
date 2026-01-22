@@ -64,6 +64,25 @@ namespace IPPopper
             }
         }
 
+        private static void CopyComputerNameToClipboard()
+        {
+            string machineName = Environment.MachineName;
+            if (string.IsNullOrWhiteSpace(machineName))
+            {
+                MessageBox.Show("Computer name is not available.", "Information",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            Clipboard.SetText(machineName);
+            NotificationHelper.Show("IPPopper", $"Copied computer name: {machineName}", Notifications.Wpf.Core.NotificationType.Information);
+        }
+
+        private void CopyNameButton_Click(object sender, RoutedEventArgs e)
+        {
+            CopyComputerNameToClipboard();
+        }
+
         private void CopyAllButton_Click(object sender, RoutedEventArgs e)
         {
             if (_currentIPs.Count == 0)
