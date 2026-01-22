@@ -97,6 +97,21 @@ The primary IP row is highlighted and displayed prominently in a separate panel 
 ## Uninstallation
 To completely remove IPPopper (run as Administrator):
 
+### Self-uninstall (recommended)
+Run:
+
+```powershell
+C:\IPPopper\IPPopper.exe -uninstall
+```
+
+This will remove:
+- Startup entry (all users)
+- Start Menu shortcut (all users)
+- The installation folder
+
+### Manual uninstall
+If needed (run as Administrator):
+
 ```powershell
 # Stop the application
 # Right-click system tray icon → Quit

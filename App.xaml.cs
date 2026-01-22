@@ -6,36 +6,58 @@ using Application = System.Windows.Application;
 namespace IPPopper
 {
     /// <summary>
-    /// Interaction logic for App.xaml
+    /// Main application class for IPPopper.
+    /// Manages system tray icon, theme application, and uninstall functionality.
+    /// Runs without a main window by default, operating as a system tray application.
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// System tray notification icon for the application.
+        /// </summary>
         private NotifyIcon? _notifyIcon;
 
+        /// <summary>
+        /// Handles application startup, processes command-line arguments,
+        /// applies system theme, and initializes the system tray icon.
+        /// </summary>
+        /// <param name="e">Startup event arguments containing command-line parameters.</param>
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            // Apply system theme before showing any windows
+            // Process -uninstall command-line switch for silent uninstallation
+            if (e.Args.Length > 0 && (e.Args[0].Equals("-uninstall", StringComparison.OrdinalIgnoreCase) || e.Args[0].Equals("/uninstall", StringComparison.OrdinalIgnoreCase)))
+            {
+                Uninstaller.PerformSelfUninstall();
+                Shutdown();
+                return;
+            }
+
+            // Initialize theme before any UI is displayed
             ThemeManager.ApplySystemTheme();
 
-            // Create system tray icon
+            // Initialize system tray icon
             CreateNotifyIcon();
 
-            // Don't show main window on startup
+            // Run as tray-only application without main window
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
         }
 
+        /// <summary>
+        /// Creates and configures the system tray notification icon with context menu and event handlers.
+        /// Loads the application icon from embedded resources.
+        /// </summary>
         private void CreateNotifyIcon()
         {
             _notifyIcon = new NotifyIcon();
 
-            // Load embedded icon
+            // Load icon from embedded resources with fallback to system icon
             try
             {
                 Assembly assembly = Assembly.GetExecutingAssembly();
 
-                // The embedded resource name follows the pattern: Namespace.FileName
+                // Embedded resource naming: Namespace.FileName
                 string iconResourceName = "IPPopper.IPPopper.ico";
 
                 using Stream? iconStream = assembly.GetManifestResourceStream(iconResourceName);
@@ -45,7 +67,7 @@ namespace IPPopper
                 }
                 else
                 {
-                    // If the exact name doesn't work, try to find it dynamically
+                    // Fallback: dynamically search for icon resource by file extension
                     string[] resourceNames = assembly.GetManifestResourceNames();
                     string? iconResource = resourceNames.FirstOrDefault(name => name.EndsWith("IPPopper.ico"));
 
@@ -69,6 +91,7 @@ namespace IPPopper
             }
             catch (Exception ex)
             {
+                // Resource load failure - use system default icon
                 _notifyIcon.Icon = SystemIcons.Information;
             }
 
@@ -91,11 +114,19 @@ namespace IPPopper
             UpdateTooltip();
         }
 
+        /// <summary>
+        /// Handles double-click events on the system tray icon to show the main window.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">Event arguments.</param>
         private void NotifyIcon_DoubleClick(object? sender, EventArgs e)
         {
             ShowWindow_Click(sender, e);
         }
 
+        /// <summary>
+        /// Updates the system tray icon tooltip with the computer name and primary IP address.
+        /// </summary>
         private async void UpdateTooltip()
         {
             if (_notifyIcon != null)
@@ -105,6 +136,11 @@ namespace IPPopper
             }
         }
 
+        /// <summary>
+        /// Shows and activates the main window when the user clicks "Show" in the context menu.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">Event arguments.</param>
         private void ShowWindow_Click(object? sender, EventArgs e)
         {
             MainWindow mainWindow = new MainWindow();
@@ -112,6 +148,11 @@ namespace IPPopper
             mainWindow.Activate();
         }
 
+        /// <summary>
+        /// Copies the primary IP address to the clipboard and shows a notification.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">Event arguments.</param>
         private async void CopyIP_Click(object? sender, EventArgs e)
         {
             string primaryIP = await IPService.GetPrimaryLocalIPAsync();
@@ -125,6 +166,11 @@ namespace IPPopper
             NotificationHelper.ShowCopiedPrimaryIP();
         }
 
+        /// <summary>
+        /// Copies the computer name to the clipboard and shows a notification.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">Event arguments.</param>
         private static void CopyName_Click(object? sender, EventArgs e)
         {
             string machineName = Environment.MachineName;
@@ -137,12 +183,21 @@ namespace IPPopper
             NotificationHelper.Show("IPPopper", $"Copied computer name: {machineName}", Notifications.Wpf.Core.NotificationType.Information);
         }
 
+        /// <summary>
+        /// Disposes the system tray icon and shuts down the application.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">Event arguments.</param>
         private void Quit_Click(object? sender, EventArgs e)
         {
             _notifyIcon?.Dispose();
             Shutdown();
         }
 
+        /// <summary>
+        /// Performs cleanup when the application exits, ensuring the system tray icon is disposed.
+        /// </summary>
+        /// <param name="e">Exit event arguments.</param>
         protected override void OnExit(ExitEventArgs e)
         {
             _notifyIcon?.Dispose();

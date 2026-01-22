@@ -4,21 +4,45 @@ using WpfApp = System.Windows.Application;
 
 namespace IPPopper;
 
+/// <summary>
+/// Provides helper methods for displaying toast notifications using the Notifications.Wpf.Core library.
+/// Manages notification display with automatic expiration and proper threading for WPF applications.
+/// </summary>
 internal static class NotificationHelper
 {
+    /// <summary>
+    /// Notification manager instance for displaying toast notifications.
+    /// </summary>
     private static readonly NotificationManager _manager = new();
+
+    /// <summary>
+    /// Invisible host window required by the notification library for proper rendering.
+    /// </summary>
     private static Window? _hostWindow;
 
+    /// <summary>
+    /// Displays a notification indicating the primary IP address was copied to the clipboard.
+    /// </summary>
     public static void ShowCopiedPrimaryIP()
     {
         Show("IPPopper", "Copied Primary IP to clipboard.", NotificationType.Information);
     }
 
+    /// <summary>
+    /// Displays a notification indicating the full IP address report was copied to the clipboard.
+    /// </summary>
     public static void ShowCopiedAllIPs()
     {
         Show("IPPopper", "Copied IP address report to clipboard.", NotificationType.Information);
     }
 
+    /// <summary>
+    /// Displays a toast notification with the specified title, message, and type.
+    /// Automatically marshals to the UI thread if needed.
+    /// </summary>
+    /// <param name="title">The notification title.</param>
+    /// <param name="message">The notification message content.</param>
+    /// <param name="type">The notification type (Information, Success, Warning, or Error).</param>
     public static void Show(string title, string message, NotificationType type)
     {
         if (WpfApp.Current == null)
@@ -32,6 +56,13 @@ internal static class NotificationHelper
         });
     }
 
+    /// <summary>
+    /// Internal async method that displays the notification on the UI thread.
+    /// Handles exceptions gracefully to prevent notification failures from crashing the application.
+    /// </summary>
+    /// <param name="title">The notification title.</param>
+    /// <param name="message">The notification message content.</param>
+    /// <param name="type">The notification type.</param>
     private static async Task ShowInternalAsync(string title, string message, NotificationType type)
     {
         try
@@ -51,17 +82,24 @@ internal static class NotificationHelper
         catch (ArgumentException ex)
         {
 #if DEBUG
+            // Log notification argument errors in debug builds only
             System.Diagnostics.Debug.WriteLine($"[NotificationHelper] ArgumentException: {ex}");
 #endif
         }
         catch (InvalidOperationException ex)
         {
 #if DEBUG
+            // Log notification operation errors in debug builds only
             System.Diagnostics.Debug.WriteLine($"[NotificationHelper] InvalidOperationException: {ex}");
 #endif
         }
     }
 
+    /// <summary>
+    /// Ensures an invisible host window exists for the notification library.
+    /// The Notifications.Wpf.Core library requires an owner window that has been shown.
+    /// Creates an off-screen, transparent window for tray-only applications.
+    /// </summary>
     private static void EnsureHostWindow()
     {
         if (_hostWindow != null)
@@ -69,8 +107,8 @@ internal static class NotificationHelper
             return;
         }
 
-        // Notifications.Wpf.Core expects an owner Window that has been shown.
-        // In a tray-only app there may be no MainWindow, so we create an off-screen host.
+        // Create invisible host window for notification library
+        // Required by Notifications.Wpf.Core even when no main window exists
         _hostWindow = new Window
         {
             WindowStyle = WindowStyle.None,

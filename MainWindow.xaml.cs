@@ -7,12 +7,20 @@ using MessageBox = System.Windows.MessageBox;
 namespace IPPopper
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Main window for displaying detailed IP address information.
+    /// Shows local, LAN, VPN, and external IP addresses with interface details.
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Cached list of IP addresses currently displayed in the UI.
+        /// </summary>
         private List<IPInfo> _currentIPs = [];
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// Sets up the window title with computer name and loads IP addresses.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -24,6 +32,9 @@ namespace IPPopper
             LoadIPAddresses();
         }
 
+        /// <summary>
+        /// Asynchronously loads all IP addresses and updates the UI data grid and primary IP display.
+        /// </summary>
         private async void LoadIPAddresses()
         {
             try
@@ -50,6 +61,12 @@ namespace IPPopper
             }
         }
 
+        /// <summary>
+        /// Handles the Copy Primary IP button click event.
+        /// Copies the primary IP address to the clipboard and shows a notification.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">Routed event arguments.</param>
         private void CopyPrimaryButton_Click(object sender, RoutedEventArgs e)
         {
             IPInfo? primaryIP = _currentIPs.FirstOrDefault(ip => ip.IsPrimary);
@@ -65,6 +82,9 @@ namespace IPPopper
             }
         }
 
+        /// <summary>
+        /// Copies the computer name to the clipboard and displays a notification.
+        /// </summary>
         private static void CopyComputerNameToClipboard()
         {
             string machineName = Environment.MachineName;
@@ -79,11 +99,22 @@ namespace IPPopper
             NotificationHelper.Show("IPPopper", $"Copied computer name: {machineName}", Notifications.Wpf.Core.NotificationType.Information);
         }
 
+        /// <summary>
+        /// Handles the Copy Computer Name button click event.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">Routed event arguments.</param>
         private void CopyNameButton_Click(object sender, RoutedEventArgs e)
         {
             CopyComputerNameToClipboard();
         }
 
+        /// <summary>
+        /// Handles the Copy All button click event.
+        /// Generates a formatted report of all IP addresses and copies it to the clipboard.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">Routed event arguments.</param>
         private void CopyAllButton_Click(object sender, RoutedEventArgs e)
         {
             if (_currentIPs.Count == 0)
@@ -93,13 +124,14 @@ namespace IPPopper
                 return;
             }
 
+            // Build formatted report with header
             StringBuilder sb = new StringBuilder();
             string header = $"IP Address Information - {Environment.MachineName}";
             sb.AppendLine(header);
             sb.AppendLine(new string('=', header.Length));
             sb.AppendLine();
 
-            // Group by type
+            // Group addresses by type for better readability
             List<IPInfo> localIPs = _currentIPs
                 .Where(ip => ip.Type.StartsWith("Local", StringComparison.OrdinalIgnoreCase))
                 .ToList();
@@ -134,14 +166,27 @@ namespace IPPopper
             NotificationHelper.ShowCopiedAllIPs();
         }
 
+        /// <summary>
+        /// Handles the Refresh button click event.
+        /// Reloads all IP address information from the system.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">Routed event arguments.</param>
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             LoadIPAddresses();
         }
 
+        /// <summary>
+        /// Handles the Hide button click event.
+        /// Hides the window (keeps application running in system tray).
+        /// Special behavior: Ctrl+Alt+Click toggles the application theme.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">Routed event arguments.</param>
         private void HideButton_Click(object sender, RoutedEventArgs e)
         {
-            // Check for Ctrl+Alt+Click to toggle theme
+            // Hidden feature: Ctrl+Alt+Click toggles theme
             if ((Keyboard.Modifiers & (ModifierKeys.Control | ModifierKeys.Alt)) == (ModifierKeys.Control | ModifierKeys.Alt))
             {
                 ThemeManager.ToggleTheme();
@@ -150,9 +195,15 @@ namespace IPPopper
             Hide();
         }
 
+        /// <summary>
+        /// Called when the window is closed.
+        /// Overridden to prevent application shutdown when the main window closes.
+        /// Application continues to run in the system tray.
+        /// </summary>
+        /// <param name="e">Event arguments.</param>
         protected override void OnClosed(EventArgs e)
         {
-            // Don't shutdown the application when this window closes
+            // Preserve tray-only mode - closing window doesn't exit application
             base.OnClosed(e);
         }
     }
