@@ -1,17 +1,21 @@
 ﻿# IPPopper - IP Address System Tray Utility
 
 ## Features
-- Runs in background with system tray icon
-- Shows primary IP and computer name in tooltip when hovering over tray icon
-- Right-click context menu with "Show", "Copy Name", "Copy IP", and "Quit" options
-- Double-click system tray icon to show window
-- Display window shows computer name in header and all IP addresses (local and external) **with MAC addresses**
-- Primary LAN IP is highlighted in green and marked as primary
-- Copy buttons to copy computer name, primary IP, or all IP information (including MAC addresses)
-- Quick "Copy IP" option in system tray context menu
-- Quick "Copy Name" option in system tray context menu
-- Refresh button to update IP addresses
-- Window opens centered on current display
+- WPF desktop UI for viewing local network IP information
+- Displays all detected IP addresses in a grid with columns for:
+  - IP address
+  - MAC address
+  - Type
+  - Interface name
+  - Primary indicator
+- Highlights the primary IP row
+- Shows the current primary IP in a dedicated panel
+- Buttons to:
+  - Copy computer name
+  - Copy primary IP
+  - Copy all IPs
+  - Refresh
+  - Hide the window (keeps the app running)
 
 ## Requirements
 - **.NET 9 Runtime** must be installed on the target machine
@@ -68,28 +72,27 @@ The Release build creates a **framework-dependent deployment**:
    - Professional installation experience
 
 ## Usage
-1. **Install**: Extract ZIP and run `Install-IPPopper.ps1` as Administrator
-2. **Automatic Start**: IPPopper starts automatically for all users on login
-3. **Manual Launch**: Use Start Menu shortcut or run `C:\IPPopper\IPPopper.exe`
-4. **System Tray**: Look for the IPPopper icon near the clock
-5. **View Network Info**: 
-   - **Hover** over icon to see primary IP address and computer name
-   - **Double-click** icon to open the network information window
-   - **Right-click** for context menu:
-     - **Show** - Open the network information window
-     - **Copy Name** - Copy the computer name to clipboard
-     - **Copy IP** - Quickly copy primary IP address to clipboard
-     - **Quit** - Exit the application
-6. **Network Information Window**:
-   - Header displays computer name
-   - View all detected IP addresses (local and external)
-   - **MAC addresses** displayed for each network adapter
-   - Primary IP highlighted in green and marked as "Primary"
-   - **Copy Name** - Copy the computer name to clipboard
-   - **Copy Primary IP** - Copy just the primary IP to clipboard
-   - **Copy All Network Info** - Copy formatted list with IPs and MAC addresses
-   - **Refresh** - Update network information
-   - **Close** - Close window (app continues in tray)
+
+### Getting Started
+After installation, IPPopper launches automatically when users log in. You can also start it manually from the Start Menu or by running `C:\IPPopper\IPPopper.exe`.
+
+### Main Window
+The main window displays a data grid showing all network interfaces detected on your computer:
+
+- **IP Address** column shows IPv4 addresses from each interface
+- **MAC Address** column displays the physical hardware address for each adapter
+- **Type** column categorizes the address (e.g., Private/LAN, Link-Local, Public/Routable)
+- **Interface** column shows the network adapter name
+- **Primary** column indicates which IP is your primary local address
+
+The primary IP row is highlighted and displayed prominently in a separate panel above the button row.
+
+### Available Actions
+- **Copy Name** - Copies your computer name to the clipboard
+- **Copy Primary IP** - Copies only the primary local IP address
+- **Copy All IPs** - Copies a formatted report of all network information including MAC addresses
+- **Refresh** - Re-scans network interfaces and updates the display
+- **Hide** - Minimizes the window to continue running in the background
 
 ## Uninstallation
 To completely remove IPPopper (run as Administrator):
@@ -110,12 +113,8 @@ Remove-Item "$env:ProgramData\Microsoft\Windows\Start Menu\Programs\IPPopper.lnk
 
 ## Technical Details
 - **Framework**: .NET 9 with WPF for UI
-- **System Tray**: Windows Forms NotifyIcon component
-- **Icon**: Fully embedded in executable (no separate icon file needed)
-- **Network Detection**: 
-  - **IP Addresses**: Primary IP detected via route to 8.8.8.8 (Google DNS)
-  - **MAC Addresses**: Physical addresses from network adapters (formatted as AA:BB:CC:DD:EE:FF)
-  - **External IP**: From multiple public services with fallback
-  - **Network Classification**: Private/LAN, Link-Local, Public/Routable
+- **Network Detection**:
+  - **IP Addresses**: Enumerated from local network interfaces
+  - **MAC Addresses**: Physical addresses from network adapters
 - **Deployment**: Framework-dependent for optimal size and performance
 - **Installation**: PowerShell-based with system-wide configuration
