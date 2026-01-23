@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.Versioning;
+using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using Clipboard = System.Windows.Clipboard;
@@ -10,6 +11,7 @@ namespace IPPopper
     /// Main window for displaying detailed IP address information.
     /// Shows local, LAN, VPN, and external IP addresses with interface details.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public partial class MainWindow : Window
     {
         /// <summary>
@@ -73,7 +75,10 @@ namespace IPPopper
             if (primaryIP != null)
             {
                 Clipboard.SetText(primaryIP.Address);
-                NotificationHelper.ShowCopiedPrimaryIP();
+                if (OperatingSystem.IsWindowsVersionAtLeast(7))
+                {
+                    NotificationHelper.ShowCopiedPrimaryIP();
+                }
             }
             else
             {
@@ -96,7 +101,10 @@ namespace IPPopper
             }
 
             Clipboard.SetText(machineName);
-            NotificationHelper.ShowCopiedComputerName();
+            if (OperatingSystem.IsWindowsVersionAtLeast(7))
+            {
+                NotificationHelper.ShowCopiedComputerName();
+            }
         }
 
         /// <summary>
@@ -163,7 +171,10 @@ namespace IPPopper
             }
 
             Clipboard.SetText(sb.ToString());
-            NotificationHelper.ShowCopiedAllIPs();
+            if (OperatingSystem.IsWindowsVersionAtLeast(7))
+            {
+                NotificationHelper.ShowCopiedAllIPs();
+            }
         }
 
         /// <summary>

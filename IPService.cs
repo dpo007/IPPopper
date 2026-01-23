@@ -89,11 +89,11 @@ namespace IPPopper
         /// Retrieves the primary local IP address used for outbound network connections.
         /// </summary>
         /// <returns>The primary IP address string, or "No IP found" if unavailable.</returns>
-        public static async Task<string> GetPrimaryLocalIPAsync()
+        public static Task<string> GetPrimaryLocalIPAsync()
         {
             List<IPInfo> localIPs = GetLocalIPAddresses();
             IPInfo? primary = localIPs.FirstOrDefault(ip => ip.IsPrimary);
-            return primary?.Address ?? "No IP found";
+            return Task.FromResult(primary?.Address ?? "No IP found");
         }
 
         /// <summary>

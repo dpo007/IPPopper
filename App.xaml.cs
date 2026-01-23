@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
+using System.Runtime.Versioning;
 using System.Windows;
 using Application = System.Windows.Application;
 
@@ -9,6 +11,7 @@ namespace IPPopper
     /// Manages system tray icon, theme application, and uninstall functionality.
     /// Runs without a main window by default, operating as a system tray application.
     /// </summary>
+    [SupportedOSPlatform("windows6.1")]
     public partial class App : Application
     {
         /// <summary>
@@ -37,7 +40,10 @@ namespace IPPopper
             ThemeManager.ApplySystemTheme();
 
             // Initialize system tray icon
-            CreateNotifyIcon();
+            if (OperatingSystem.IsWindowsVersionAtLeast(7, 0))
+            {
+                CreateNotifyIcon();
+            }
 
             // Run as tray-only application without main window
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
@@ -47,6 +53,7 @@ namespace IPPopper
         /// Creates and configures the system tray notification icon with context menu and event handlers.
         /// Loads the application icon from embedded resources.
         /// </summary>
+        [SupportedOSPlatform("windows7.0")]
         private void CreateNotifyIcon()
         {
             _notifyIcon = new NotifyIcon();
@@ -88,7 +95,7 @@ namespace IPPopper
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Resource load failure - use system default icon
                 _notifyIcon.Icon = SystemIcons.Information;
@@ -152,6 +159,7 @@ namespace IPPopper
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">Event arguments.</param>
+        [SupportedOSPlatform("windows7.0")]
         private async void CopyIP_Click(object? sender, EventArgs e)
         {
             string primaryIP = await IPService.GetPrimaryLocalIPAsync();
@@ -170,6 +178,7 @@ namespace IPPopper
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">Event arguments.</param>
+        [SupportedOSPlatform("windows7.0")]
         private static void CopyName_Click(object? sender, EventArgs e)
         {
             string machineName = Environment.MachineName;

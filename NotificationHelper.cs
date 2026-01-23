@@ -1,4 +1,5 @@
 using Notifications.Wpf.Core;
+using System.Runtime.Versioning;
 using System.Windows;
 using WpfApp = System.Windows.Application;
 
@@ -13,7 +14,10 @@ internal static class NotificationHelper
     /// <summary>
     /// Notification manager instance for displaying toast notifications.
     /// </summary>
-    private static readonly NotificationManager _manager = new();
+    private static NotificationManager? _manager;
+
+    [SupportedOSPlatform("windows7.0")]
+    private static NotificationManager Manager => _manager ??= new NotificationManager();
 
     /// <summary>
     /// Invisible host window required by the notification library for proper rendering.
@@ -23,6 +27,7 @@ internal static class NotificationHelper
     /// <summary>
     /// Displays a notification indicating the primary IP address was copied to the clipboard.
     /// </summary>
+    [SupportedOSPlatform("windows7.0")]
     public static void ShowCopiedPrimaryIP()
     {
         Show("IPPopper", "Copied Primary IP to clipboard.", NotificationType.Information);
@@ -31,6 +36,7 @@ internal static class NotificationHelper
     /// <summary>
     /// Displays a notification indicating the full IP address report was copied to the clipboard.
     /// </summary>
+    [SupportedOSPlatform("windows7.0")]
     public static void ShowCopiedAllIPs()
     {
         Show("IPPopper", "Copied IP address report to clipboard.", NotificationType.Information);
@@ -39,6 +45,7 @@ internal static class NotificationHelper
     /// <summary>
     /// Displays a notification indicating the computer name was copied to the clipboard.
     /// </summary>
+    [SupportedOSPlatform("windows7.0")]
     public static void ShowCopiedComputerName()
     {
         Show("IPPopper", "Copied computer name to clipboard.", NotificationType.Information);
@@ -51,17 +58,31 @@ internal static class NotificationHelper
     /// <param name="title">The notification title.</param>
     /// <param name="message">The notification message content.</param>
     /// <param name="type">The notification type (Information, Success, Warning, or Error).</param>
+    [SupportedOSPlatform("windows7.0")]
     public static void Show(string title, string message, NotificationType type)
     {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
         if (WpfApp.Current == null)
         {
             return;
         }
 
-        WpfApp.Current.Dispatcher.BeginInvoke(async () =>
+        BeginInvokeOnUiThread(() => ShowInternalAsync(title, message, type));
+    }
+
+    [SupportedOSPlatform("windows7.0")]
+    private static void BeginInvokeOnUiThread(Func<Task> action)
+    {
+        if (!OperatingSystem.IsWindows() || WpfApp.Current is null)
         {
-            await ShowInternalAsync(title, message, type);
-        });
+            return;
+        }
+
+        WpfApp.Current.Dispatcher.BeginInvoke(async () => await action());
     }
 
     /// <summary>
@@ -71,13 +92,19 @@ internal static class NotificationHelper
     /// <param name="title">The notification title.</param>
     /// <param name="message">The notification message content.</param>
     /// <param name="type">The notification type.</param>
+    [SupportedOSPlatform("windows7.0")]
     private static async Task ShowInternalAsync(string title, string message, NotificationType type)
     {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
         try
         {
             EnsureHostWindow();
 
-            await _manager.ShowAsync(
+            await Manager.ShowAsync(
                 new NotificationContent
                 {
                     Title = title,
@@ -108,8 +135,14 @@ internal static class NotificationHelper
     /// The Notifications.Wpf.Core library requires an owner window that has been shown.
     /// Creates an off-screen, transparent window for tray-only applications.
     /// </summary>
+    [SupportedOSPlatform("windows7.0")]
     private static void EnsureHostWindow()
     {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
         if (_hostWindow != null)
         {
             return;

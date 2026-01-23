@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using System.Runtime.Versioning;
 using System.Windows;
 
 namespace IPPopper
@@ -16,11 +17,10 @@ namespace IPPopper
         /// </summary>
         public static void ApplySystemTheme()
         {
-            bool isDarkMode = IsSystemDarkMode();
-            ApplyTheme(isDarkMode);
+            ApplyTheme(OperatingSystem.IsWindows() && IsSystemDarkMode());
         }
 
-        private static bool _isDarkMode = IsSystemDarkMode();
+        private static bool _isDarkMode = OperatingSystem.IsWindows() && IsSystemDarkMode();
 
         /// <summary>
         /// Applies the specified theme to the application.
@@ -59,8 +59,14 @@ namespace IPPopper
         /// Checks if the system is in dark mode.
         /// </summary>
         /// <returns>True if system is in dark mode, false otherwise.</returns>
+        [SupportedOSPlatform("windows")]
         private static bool IsSystemDarkMode()
         {
+            if (!OperatingSystem.IsWindows())
+            {
+                return false;
+            }
+
             try
             {
                 object? registryValue = Registry.GetValue(RegistryPath, RegistryKey, 1);

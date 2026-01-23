@@ -1,5 +1,7 @@
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.Versioning;
 using System.Security.Principal;
 using System.Text;
 
@@ -17,6 +19,16 @@ internal static class Uninstaller
     /// </summary>
     internal static void PerformSelfUninstall()
     {
+        if (!OperatingSystem.IsWindows())
+        {
+            System.Windows.MessageBox.Show(
+                "Uninstall is only supported on Windows.",
+                "Uninstall IPPopper",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Error);
+            return;
+        }
+
         // Administrator privileges required for registry and Program Files access
         if (!IsRunningAsAdministrator())
         {
@@ -100,6 +112,7 @@ internal static class Uninstaller
     /// Determines whether the current process is running with administrator privileges.
     /// </summary>
     /// <returns>True if running as administrator; otherwise, false.</returns>
+    [SupportedOSPlatform("windows")]
     private static bool IsRunningAsAdministrator()
     {
         using WindowsIdentity identity = WindowsIdentity.GetCurrent();
@@ -111,6 +124,7 @@ internal static class Uninstaller
     /// Attempts to relaunch the application with elevated privileges and the -uninstall argument.
     /// Silently fails if the user cancels the UAC prompt.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     private static void TryRelaunchElevatedWithUninstallArg()
     {
         string exePath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
@@ -140,6 +154,7 @@ internal static class Uninstaller
     /// <summary>
     /// Removes the IPPopper startup entry from the system registry (HKLM\Run).
     /// </summary>
+    [SupportedOSPlatform("windows")]
     private static void RemoveStartupRegistryValue()
     {
         using RegistryKey? key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", writable: true);
@@ -149,6 +164,7 @@ internal static class Uninstaller
     /// <summary>
     /// Removes the IPPopper shortcut from the All Users Start Menu.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     private static void RemoveStartMenuShortcut()
     {
         string startMenuPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu);
@@ -165,6 +181,7 @@ internal static class Uninstaller
     /// then deletes the installation directory and itself.
     /// </summary>
     /// <param name="installDir">The installation directory to remove.</param>
+    [SupportedOSPlatform("windows")]
     private static void CreateAndLaunchCleanupScript(string installDir)
     {
         string scriptPath = Path.Combine(Path.GetTempPath(), $"IPPopper_Uninstall_{Guid.NewGuid():N}.ps1");

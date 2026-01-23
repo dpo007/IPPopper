@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using Microsoft.Deployment.WindowsInstaller;
 using System.Diagnostics;
 
 namespace IPPopper.LegacyCleanup;

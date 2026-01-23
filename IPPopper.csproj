@@ -7,6 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
     <ApplicationIcon>IPPopper.ico</ApplicationIcon>
     
     <!-- Assembly Information Properties -->
@@ -34,6 +36,11 @@
 
   <ItemGroup>
     <EmbeddedResource Include="IPPopper.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="IPPopper Installer\**\*.cs" />
+    <None Remove="IPPopper Installer\**" />
   </ItemGroup>
 
 </Project>
