@@ -1,0 +1,6 @@
+﻿<Project Sdk="WixToolset.Sdk/6.0.2">
+  <ItemGroup>
+    <None Include="LegacyCleanup\LegacyCleanup.csproj" />
+    <None Include="LegacyCleanup\LegacyCleanupActions.cs" />
+  </ItemGroup>
+</Project>

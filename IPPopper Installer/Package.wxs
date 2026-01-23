@@ -1,0 +1,43 @@
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package
+    Name="IPPopper"
+    Manufacturer="Mainstreet Credit Union"
+    Version="1.0.0.0"
+    UpgradeCode="3F5C7E1A-6B2B-4C7A-A7D9-3C2B17B4B3D0">
+
+    <SummaryInformation Keywords="Installer" Description="IPPopper - IP Address System Tray Utility" />
+
+    <MajorUpgrade DowngradeErrorMessage="!(loc.DowngradeError)" />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Property Id="ARPPRODUCTICON" Value="IPPopperIcon" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/dpo007/IPPopper" />
+
+    <!-- Detect legacy (non-MSI) installs so we can clean them up on first MSI install -->
+    <Property Id="LEGACY_IPPOPPER_RUN_VALUE">
+      <RegistrySearch
+        Root="HKLM"
+        Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+        Name="IPPopper"
+        Type="raw" />
+    </Property>
+
+    <Property Id="LEGACY_IPPOPPER_EXE">
+      <DirectorySearch Id="LegacyInstallDirSearch" Path="C:\IPPopper">
+        <FileSearch Id="LegacyExeSearch" Name="IPPopper.exe" />
+      </DirectorySearch>
+    </Property>
+
+    <Property Id="LEGACY_IPPOPPER_SHORTCUT">
+      <DirectorySearch Id="LegacyStartMenuProgramsSearch" Path="[CommonStartMenuFolder]Programs">
+        <FileSearch Id="LegacyShortcutSearch" Name="IPPopper.lnk" />
+      </DirectorySearch>
+    </Property>
+
+    <Feature Id="Main" Title="IPPopper" Level="1">
+      <ComponentGroupRef Id="IPPopperFiles" />
+      <ComponentGroupRef Id="IPPopperShortcuts" />
+      <ComponentGroupRef Id="IPPopperStartup" />
+    </Feature>
+  </Package>
+</Wix>

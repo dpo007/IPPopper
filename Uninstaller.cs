@@ -1,6 +1,5 @@
 using Microsoft.Win32;
 using System.Diagnostics;
-using System.IO;
 using System.Security.Principal;
 using System.Text;
 
@@ -21,7 +20,7 @@ internal static class Uninstaller
         // Administrator privileges required for registry and Program Files access
         if (!IsRunningAsAdministrator())
         {
-            var result = System.Windows.MessageBox.Show(
+            System.Windows.MessageBoxResult result = System.Windows.MessageBox.Show(
                 "IPPopper uninstall requires Administrator privileges.\n\nClick OK to relaunch as Administrator.",
                 "IPPopper Uninstall",
                 System.Windows.MessageBoxButton.OKCancel,
@@ -35,7 +34,7 @@ internal static class Uninstaller
             return;
         }
 
-        var confirm = System.Windows.MessageBox.Show(
+        System.Windows.MessageBoxResult confirm = System.Windows.MessageBox.Show(
             "This will uninstall IPPopper by removing:\n\n" +
             "• Startup entry (all users)\n" +
             "• Start Menu shortcut (all users)\n" +

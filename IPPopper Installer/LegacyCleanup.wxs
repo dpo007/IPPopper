@@ -1,0 +1,21 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <Binary Id="LegacyCleanupCA" SourceFile="LegacyCleanup\bin\$(var.Configuration)\LegacyCleanup.dll" />
+
+    <CustomAction
+      Id="CA_CleanupLegacyInstall"
+      BinaryRef="LegacyCleanupCA"
+      DllEntry="CleanupLegacyInstall"
+      Execute="deferred"
+      Impersonate="no"
+      Return="check" />
+
+    <InstallExecuteSequence>
+      <!-- Only during first MSI install and only if we detect a legacy install artifact -->
+      <Custom
+        Action="CA_CleanupLegacyInstall"
+        Before="InstallFiles"
+        Condition="NOT Installed AND (LEGACY_IPPOPPER_RUN_VALUE OR LEGACY_IPPOPPER_EXE OR LEGACY_IPPOPPER_SHORTCUT)" />
+    </InstallExecuteSequence>
+  </Fragment>
+</Wix>

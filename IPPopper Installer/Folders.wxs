@@ -1,0 +1,13 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="INSTALLFOLDER" Name="IPPopper" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="CommonProgramsFolder">
+        <Directory Id="IPPopperProgramsFolder" Name="IPPopper" />
+      </Directory>
+    </StandardDirectory>
+  </Fragment>
+</Wix>

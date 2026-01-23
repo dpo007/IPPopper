@@ -1,0 +1,42 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="IPPopperFiles" Directory="INSTALLFOLDER">
+      <!-- Harvest everything required to run the framework-dependent app -->
+      <Files Include="..\bin\Release\net9.0-windows\**\*.*" />
+    </ComponentGroup>
+
+    <ComponentGroup Id="IPPopperStartup" Directory="INSTALLFOLDER">
+      <Component Id="CmpStartWithWindows" Guid="AA3A5FBB-74C6-4F6E-BD1A-4A84F8B2919F">
+        <RegistryValue
+          Root="HKLM"
+          Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+          Name="IPPopper"
+          Value="&quot;[INSTALLFOLDER]IPPopper.exe&quot;"
+          Type="string"
+          KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="IPPopperShortcuts" Directory="IPPopperProgramsFolder">
+      <Component Id="CmpStartMenuShortcut" Guid="F4B34B0A-9F33-4FCA-8C47-0C9C1E6B0889">
+        <Shortcut
+          Id="IPPopperStartMenuShortcut"
+          Name="IPPopper"
+          Description="IPPopper - IP Address System Tray Utility"
+          Target="[INSTALLFOLDER]IPPopper.exe"
+          WorkingDirectory="INSTALLFOLDER" />
+
+        <RemoveFolder Id="RemoveIPPopperProgramsFolder" Directory="IPPopperProgramsFolder" On="uninstall" />
+        <RemoveFolder Id="RemoveCommonProgramsFolder" Directory="CommonProgramsFolder" On="uninstall" />
+
+        <RegistryValue
+          Root="HKCU"
+          Key="Software\MainstreetCreditUnion\IPPopper"
+          Name="Installed"
+          Type="integer"
+          Value="1"
+          KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>
