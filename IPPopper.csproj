@@ -17,21 +17,21 @@
     <AssemblyCompany>Your Company Name</AssemblyCompany>
     <AssemblyProduct>IPPopper</AssemblyProduct>
     <AssemblyCopyright>Copyright © 2024 Your Company Name</AssemblyCopyright>
-    <AssemblyVersion>1.42.5.0</AssemblyVersion>
-    <FileVersion>1.42.5.0</FileVersion>
+    <AssemblyVersion>1.42.6.0</AssemblyVersion>
+    <FileVersion>1.42.6.0</FileVersion>
     <ProductVersion>1.0.0</ProductVersion>
     
     <!-- Additional metadata that appears in file properties -->
     <Company>The Cantankerous Contraption Company</Company>
     <Product>IPPopper</Product>
     <Copyright>©2025 The Cantankerous Contraption Co.</Copyright>
-    <Version>1.42.5</Version>
+    <Version>1.42.6</Version>
     <Description>A SysTray utility to display current IP addresses.</Description>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Notifications.Wpf.Core" Version="2.0.1" />
-    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.12" />
   </ItemGroup>
 
   <ItemGroup>
