@@ -1,8 +1,8 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package
     Name="IPPopper"
-    Manufacturer="Mainstreet Credit Union"
-    Version="1.42.5.0"
+    Manufacturer="Cantankerous Contraption Co."
+    Version="1.42.6.0"
     UpgradeCode="3F5C7E1A-6B2B-4C7A-A7D9-3C2B17B4B3D0">
 
     <SummaryInformation Keywords="Installer" Description="IPPopper - IP Address System Tray Utility" />

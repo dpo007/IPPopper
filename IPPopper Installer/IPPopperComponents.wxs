@@ -34,7 +34,7 @@
 
         <RegistryValue
           Root="HKCU"
-          Key="Software\MainstreetCreditUnion\IPPopper"
+          Key="Software\CantankerousContraptionCo\IPPopper"
           Name="Installed"
           Type="integer"
           Value="1"
