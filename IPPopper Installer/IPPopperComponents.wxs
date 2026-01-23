@@ -1,8 +1,11 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Fragment>
     <ComponentGroup Id="IPPopperFiles" Directory="INSTALLFOLDER">
-      <!-- Harvest everything required to run the framework-dependent app -->
-      <Files Include="..\bin\Release\net9.0-windows\**\*.*" />
+      <Files Include="..\bin\Release\net9.0-windows\IPPopper.exe" />
+      <Files Include="..\bin\Release\net9.0-windows\IPPopper.dll" />
+      <Files Include="..\bin\Release\net9.0-windows\IPPopper.deps.json" />
+      <Files Include="..\bin\Release\net9.0-windows\IPPopper.runtimeconfig.json" />
+      <Files Include="..\bin\Release\net9.0-windows\Notifications.Wpf.Core.dll" />
     </ComponentGroup>
 
     <ComponentGroup Id="IPPopperStartup" Directory="INSTALLFOLDER">
