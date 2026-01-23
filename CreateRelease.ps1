@@ -20,7 +20,7 @@ Write-Host "Build successful!" -ForegroundColor Green
 # Define paths
 $releaseDir = "bin\Release\net9.0-windows"
 $tempDir = "temp_release"
-$zipName = "IPPopper-Release.zip"
+$zipName = ("IPPopper-Release({0}).zip" -f (Get-Date -Format "yyyy-MM-dd"))
 
 # Clean up any previous temp directory and zip file
 if (Test-Path $tempDir) {
