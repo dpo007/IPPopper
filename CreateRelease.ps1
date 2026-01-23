@@ -383,7 +383,7 @@ Write-Host "  • Run Install-IPPopper.ps1 as Administrator to install" -Foregro
 Write-Host "  • Installs to C:\IPPopper by default (customizable)" -ForegroundColor Gray
 Write-Host "  • Configures automatic startup for all users" -ForegroundColor Gray
 Write-Host "  • Requires .NET 9 Runtime on target machine" -ForegroundColor Gray
-Write-Host "  • Available switches: -SkipUninstall, -UninstallOnly, -RunAfterInstall" -ForegroundColor Gray
+Write-Host "  • Available switches: -SkipUninstall, -UninstallOnly" -ForegroundColor Gray
 
 Write-Host "`nDone!" -ForegroundColor Green
 
