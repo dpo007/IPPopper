@@ -72,7 +72,7 @@ The MSI installs to:
 - `C:\Program Files\IPPopper\`
 
 The MSI configures:
-- Start Menu shortcut: `Start Menu`  `IPPopper`  `IPPopper`
+- Start Menu shortcut: `Start Menu` → `IPPopper` → `IPPopper`
 - Automatic startup for all users (via `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run`)
 
 ## Usage
@@ -117,3 +117,4 @@ Uninstall via Windows:
 - **External/Public IP**: Retrieved by querying external services (e.g., `api.ipify.org`, `icanhazip.com`)
 - **Deployment**: Framework-dependent (requires .NET 9 Desktop Runtime)
 - **Installer**: WiX Toolset v4-based MSI installer
+
