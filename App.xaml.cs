@@ -19,6 +19,10 @@ namespace IPPopper
         /// </summary>
         private NotifyIcon? _notifyIcon;
 
+        private const string SingleInstanceMutexName = @"Local\IPPopper_SingleInstanceMutex";
+
+        private Mutex? _singleInstanceMutex;
+
         /// <summary>
         /// Handles application startup, processes command-line arguments,
         /// applies system theme, and initializes the system tray icon.
@@ -26,6 +30,18 @@ namespace IPPopper
         /// <param name="e">Startup event arguments containing command-line parameters.</param>
         protected override void OnStartup(StartupEventArgs e)
         {
+            // Ensure WPF dispatcher is kept alive at startup even though the app is tray-only.
+            // We later switch to OnExplicitShutdown after initialization.
+            ShutdownMode = ShutdownMode.OnLastWindowClose;
+
+            _singleInstanceMutex = new Mutex(initiallyOwned: true, name: SingleInstanceMutexName, createdNew: out bool createdNew);
+
+            if (!createdNew)
+            {
+                Shutdown();
+                return;
+            }
+
             base.OnStartup(e);
 
             // Process -uninstall command-line switch for silent uninstallation
@@ -209,6 +225,24 @@ namespace IPPopper
         protected override void OnExit(ExitEventArgs e)
         {
             _notifyIcon?.Dispose();
+
+            if (_singleInstanceMutex != null)
+            {
+                try
+                {
+                    _singleInstanceMutex.ReleaseMutex();
+                }
+                catch (ApplicationException)
+                {
+                    // Not owned by this thread/process (or already released)
+                }
+                finally
+                {
+                    _singleInstanceMutex.Dispose();
+                    _singleInstanceMutex = null;
+                }
+            }
+
             base.OnExit(e);
         }
     }

@@ -75,6 +75,34 @@ internal static class NotificationHelper
     }
 
     [SupportedOSPlatform("windows7.0")]
+    public static void ShowBlocking(string title, string message, NotificationType type, TimeSpan expirationTime)
+    {
+        if (!OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
+        if (WpfApp.Current == null)
+        {
+            return;
+        }
+
+        EnsureHostWindow();
+
+        WpfApp.Current.Dispatcher.Invoke(() =>
+        {
+            Manager.ShowAsync(
+                new NotificationContent
+                {
+                    Title = title,
+                    Message = message,
+                    Type = type,
+                },
+                expirationTime: expirationTime).GetAwaiter().GetResult();
+        });
+    }
+
+    [SupportedOSPlatform("windows7.0")]
     private static void BeginInvokeOnUiThread(Func<Task> action)
     {
         if (!OperatingSystem.IsWindows() || WpfApp.Current is null)
