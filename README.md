@@ -1,6 +1,6 @@
 ﻿# IPPopper - IP Address System Tray Utility
 
-<img align="right" src="Assets/IPPopperLogo.png" alt="IPPopper Logo" width="200" style="margin-left: 20px; margin-bottom: 20px; margin-right: 20px;margin-top: 50px">
+<img align="right" src="Assets/IPPopperLogo.png" alt="IPPopper Logo" width="200" style="margin-left: 20px; margin-bottom: 20px; margin-right: 20px;margin-top: 200px">
 
 ## Features
 - Windows system tray utility (WPF) that runs primarily from the tray
