@@ -34,25 +34,7 @@
       </DirectorySearch>
     </Property>
 
-    <!-- Embed VBScript for legacy cleanup -->
-    <Binary Id="CleanupLegacyScript" SourceFile="CleanupLegacy.vbs" />
-
-    <!-- VBScript custom action for legacy cleanup -->
-    <CustomAction
-      Id="CA_CleanupLegacyInstall"
-      BinaryRef="CleanupLegacyScript"
-      Execute="immediate"
-      Return="ignore"
-      Impersonate="no"
-      VBScriptCall="Call Main()" />
-
-    <InstallExecuteSequence>
-      <!-- Run cleanup early during install, after CreateFolders -->
-      <Custom
-        Action="CA_CleanupLegacyInstall"
-        After="CreateFolders"
-        Condition="NOT Installed AND (LEGACY_IPPOPPER_RUN_VALUE OR LEGACY_IPPOPPER_EXE OR LEGACY_IPPOPPER_SHORTCUT)" />
-    </InstallExecuteSequence>
+    <!-- Legacy cleanup custom action removed -->
 
     <Feature Id="Main" Title="IPPopper" Level="1">
       <ComponentGroupRef Id="IPPopperFiles" />
