@@ -142,14 +142,22 @@ internal static class NotificationHelper
                 expirationTime: TimeSpan.FromSeconds(3)
                 );
         }
-        catch (ArgumentException ex)
+        catch (ArgumentException
+#if DEBUG
+            ex
+#endif
+            )
         {
 #if DEBUG
             // Log notification argument errors in debug builds only
             System.Diagnostics.Debug.WriteLine($"[NotificationHelper] ArgumentException: {ex}");
 #endif
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException
+#if DEBUG
+            ex
+#endif
+            )
         {
 #if DEBUG
             // Log notification operation errors in debug builds only
