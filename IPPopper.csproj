@@ -26,4 +26,8 @@
     <None Remove="IPPopper Installer\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assets\" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,7 @@
 ﻿# IPPopper - IP Address System Tray Utility
 
+<img align="right" src="Assets/IPPopperLogo.png" alt="IPPopper Logo" width="200" style="margin-left: 20px; margin-bottom: 20px; margin-right: 20px;">
+
 ## Features
 - Windows system tray utility (WPF) that runs primarily from the tray
 - Tray icon shows tooltip: `IPPopper (<COMPUTERNAME>) - <Primary IP>`
