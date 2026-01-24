@@ -1,9 +1,8 @@
 ﻿# IPPopper - IP Address System Tray Utility
 
-<svg align="right" width="240" height="240" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100%" height="100%" fill="white"/>
-  <image x="20" y="20" width="200" height="200" href="Assets/IPPopperLogo.png" alt="IPPopper Logo"/>
-</svg>
+<div align="center">
+  <img src="Assets/IPPopperLogo.png" alt="IPPopper Logo" width="200"/>
+</div>
 
 ## Features
 - Windows system tray utility (WPF) that runs primarily from the tray
