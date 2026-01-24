@@ -1,12 +1,12 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-  <Fragment>
-    <ComponentGroup Id="IPPopperFiles" Directory="INSTALLFOLDER">
-      <Files Include="..\bin\Release\net9.0-windows\IPPopper.exe" />
-      <Files Include="..\bin\Release\net9.0-windows\IPPopper.dll" />
-      <Files Include="..\bin\Release\net9.0-windows\IPPopper.deps.json" />
-      <Files Include="..\bin\Release\net9.0-windows\IPPopper.runtimeconfig.json" />
-      <Files Include="..\bin\Release\net9.0-windows\Notifications.Wpf.Core.dll" />
-    </ComponentGroup>
+<Fragment>
+  <ComponentGroup Id="IPPopperFiles" Directory="INSTALLFOLDER">
+    <Files Include="$(var.IPPopper.TargetDir)IPPopper.exe" />
+    <Files Include="$(var.IPPopper.TargetDir)IPPopper.dll" />
+    <Files Include="$(var.IPPopper.TargetDir)IPPopper.deps.json" />
+    <Files Include="$(var.IPPopper.TargetDir)IPPopper.runtimeconfig.json" />
+    <Files Include="$(var.IPPopper.TargetDir)Notifications.Wpf.Core.dll" />
+  </ComponentGroup>
 
     <ComponentGroup Id="IPPopperStartup" Directory="INSTALLFOLDER">
       <Component Id="CmpStartWithWindows" Guid="AA3A5FBB-74C6-4F6E-BD1A-4A84F8B2919F">
