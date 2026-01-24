@@ -1,0 +1,73 @@
+<Project>
+  
+  <!-- 
+    Solution-wide assembly metadata and build-date versioning.
+    All projects in this solution automatically inherit these properties.
+    
+    Versioning Strategy:
+    - AssemblyVersion: Stable (1.0.0.0) - only changes on breaking changes
+    - FileVersion: Build date-based (yy.MM.dd.rev) - reflects when binary was built
+    - InformationalVersion: Matches FileVersion
+    
+    Revision Component:
+    - CI builds: Uses monotonic build number from environment variable
+    - Local builds: Uses UTC time in HHmm format (e.g., 1430 = 2:30 PM UTC)
+  -->
+  
+  <PropertyGroup Label="Static Metadata">
+    <!-- Company and copyright information -->
+    <Company>Cantankerous Contraption Co.</Company>
+    <Copyright>(c) Cantankerous Contraption Co. 2025-$([System.DateTime]::UtcNow.Year)</Copyright>
+    
+    <!-- Stable assembly version - only increment for breaking changes -->
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Build Date Version Components">
+    <!-- Extract UTC date components for version number -->
+    <VersionYear>$([System.DateTime]::UtcNow.ToString('yy'))</VersionYear>
+    <VersionMonth>$([System.DateTime]::UtcNow.ToString('MM'))</VersionMonth>
+    <VersionDay>$([System.DateTime]::UtcNow.ToString('dd'))</VersionDay>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Revision Detection - CI vs Local">
+    <!-- 
+      Revision component priority:
+      1. GITHUB_RUN_NUMBER (GitHub Actions)
+      2. BUILD_NUMBER (Azure DevOps, Jenkins, TeamCity)
+      3. CI_PIPELINE_IID (GitLab CI)
+      4. Fallback: UTC time HHmm (local builds)
+    -->
+    <VersionRevision Condition="'$(GITHUB_RUN_NUMBER)' != ''">$(GITHUB_RUN_NUMBER)</VersionRevision>
+    <VersionRevision Condition="'$(VersionRevision)' == '' AND '$(BUILD_NUMBER)' != ''">$(BUILD_NUMBER)</VersionRevision>
+    <VersionRevision Condition="'$(VersionRevision)' == '' AND '$(CI_PIPELINE_IID)' != ''">$(CI_PIPELINE_IID)</VersionRevision>
+    <VersionRevision Condition="'$(VersionRevision)' == ''">$([System.DateTime]::UtcNow.ToString('HHmm'))</VersionRevision>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Final Version Properties">
+    <!-- 
+      FileVersion: Windows-friendly 4-part numeric version reflecting build date
+      Format: yy.MM.dd.rev (e.g., 26.01.24.1430 or 26.01.24.1234 for CI build #1234)
+    -->
+    <FileVersion>$(VersionYear).$(VersionMonth).$(VersionDay).$(VersionRevision)</FileVersion>
+    
+    <!-- 
+      InformationalVersion: Same as FileVersion (product version shown in file properties)
+      Could optionally append +metadata (e.g., commit SHA) but keeping simple by default
+    -->
+    <InformationalVersion>$(FileVersion)</InformationalVersion>
+    
+    <!-- 
+      Version: NuGet/package version (not used for EXE projects, but set for consistency)
+      Omit the revision component for cleaner display in package scenarios
+    -->
+    <Version>$(VersionYear).$(VersionMonth).$(VersionDay)</Version>
+    
+    <!-- 
+      Disable automatic source revision info appending to InformationalVersion
+      The SDK automatically appends commit SHA when SourceRevisionId is set
+    -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+  </PropertyGroup>
+
+</Project>
