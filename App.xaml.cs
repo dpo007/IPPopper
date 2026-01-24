@@ -44,14 +44,6 @@ namespace IPPopper
 
             base.OnStartup(e);
 
-            // Process -uninstall command-line switch for silent uninstallation
-            if (e.Args.Length > 0 && (e.Args[0].Equals("-uninstall", StringComparison.OrdinalIgnoreCase) || e.Args[0].Equals("/uninstall", StringComparison.OrdinalIgnoreCase)))
-            {
-                Uninstaller.PerformSelfUninstall();
-                Shutdown();
-                return;
-            }
-
             // Initialize theme before any UI is displayed
             ThemeManager.ApplySystemTheme();
 
