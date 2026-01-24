@@ -116,7 +116,7 @@ namespace IPPopper
             _notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
 
             // Create context menu
-            ContextMenuStrip contextMenu = new ContextMenuStrip();
+            ContextMenuStrip contextMenu = new();
             contextMenu.Items.Add("Show", null, ShowWindow_Click);
             contextMenu.Items.Add("Copy Name", null, CopyName_Click);
             contextMenu.Items.Add("Copy IP", null, CopyIP_Click);
@@ -157,7 +157,7 @@ namespace IPPopper
         /// <param name="e">Event arguments.</param>
         private void ShowWindow_Click(object? sender, EventArgs e)
         {
-            MainWindow mainWindow = new MainWindow();
+            MainWindow mainWindow = new();
             mainWindow.Show();
             mainWindow.Activate();
         }
