@@ -1,5 +1,11 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Merge ButtonStyles first -->
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ButtonStyles.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <!-- Light Theme Colors -->
     <Color x:Key="BackgroundColor">#FFFFFFFF</Color>
     <Color x:Key="ForegroundColor">#FF000000</Color>
@@ -42,13 +48,8 @@
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
     </Style>
 
-    <!-- Button Style -->
-    <Style TargetType="Button">
-        <Setter Property="Background" Value="#FFE8E8E8" />
-        <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
-        <Setter Property="Padding" Value="10,5" />
-    </Style>
+    <!-- Button Style - Use Glow Button Style -->
+    <Style TargetType="Button" BasedOn="{StaticResource GlowButtonStyle}" />
 
     <!-- Border Style -->
     <Style TargetType="Border">
