@@ -1,12 +1,7 @@
 ﻿<Project Sdk="WixToolset.Sdk/6.0.2">
 
   <PropertyGroup>
-    <!-- 
-      WiX requires a 4-part numeric version.
-      Use FileVersion from Directory.Build.props which provides build-date versioning.
-      Format: yy.MM.dd.rev (e.g., 26.01.24.1430)
-    -->
-    <DefineConstants>IPPopperVersion=$(FileVersion)</DefineConstants>
+    <DefineConstants>IPPopperVersion=$(MsiProductVersion)</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

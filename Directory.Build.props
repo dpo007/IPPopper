@@ -8,6 +8,7 @@
     - AssemblyVersion: Stable (1.0.0.0) - only changes on breaking changes
     - FileVersion: Build date-based (yy.MM.dd.rev) - reflects when binary was built
     - InformationalVersion: Matches FileVersion
+    - MsiProductVersion: yy.MM.minuteOfMonth (UTC) for Windows Installer upgrade ordering
     
     Revision Component:
     - CI builds: Uses monotonic build number from environment variable
@@ -24,10 +25,13 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Build Date Version Components">
-    <!-- Extract UTC date components for version number -->
-    <VersionYear>$([System.DateTime]::UtcNow.ToString('yy'))</VersionYear>
-    <VersionMonth>$([System.DateTime]::UtcNow.ToString('MM'))</VersionMonth>
-    <VersionDay>$([System.DateTime]::UtcNow.ToString('dd'))</VersionDay>
+    <!-- Capture UTC once in the invariant sortable format yyyy-MM-ddTHH:mm:ss. -->
+    <VersionTimestampUtc>$([System.DateTime]::UtcNow.ToString('s'))</VersionTimestampUtc>
+    <VersionYear>$(VersionTimestampUtc.Substring(2, 2))</VersionYear>
+    <VersionMonth>$(VersionTimestampUtc.Substring(5, 2))</VersionMonth>
+    <VersionDay>$(VersionTimestampUtc.Substring(8, 2))</VersionDay>
+    <VersionHour>$(VersionTimestampUtc.Substring(11, 2))</VersionHour>
+    <VersionMinute>$(VersionTimestampUtc.Substring(14, 2))</VersionMinute>
   </PropertyGroup>
 
   <PropertyGroup Label="Revision Detection - CI vs Local">
@@ -41,7 +45,7 @@
     <VersionRevision Condition="'$(GITHUB_RUN_NUMBER)' != ''">$(GITHUB_RUN_NUMBER)</VersionRevision>
     <VersionRevision Condition="'$(VersionRevision)' == '' AND '$(BUILD_NUMBER)' != ''">$(BUILD_NUMBER)</VersionRevision>
     <VersionRevision Condition="'$(VersionRevision)' == '' AND '$(CI_PIPELINE_IID)' != ''">$(CI_PIPELINE_IID)</VersionRevision>
-    <VersionRevision Condition="'$(VersionRevision)' == ''">$([System.DateTime]::UtcNow.ToString('HHmm'))</VersionRevision>
+    <VersionRevision Condition="'$(VersionRevision)' == ''">$(VersionHour)$(VersionMinute)</VersionRevision>
   </PropertyGroup>
 
   <PropertyGroup Label="Final Version Properties">
@@ -62,6 +66,15 @@
       Omit the revision component for cleaner display in package scenarios
     -->
     <Version>$(VersionYear).$(VersionMonth).$(VersionDay)</Version>
+
+    <!-- Windows Installer compares only three fields. Pack the zero-based UTC
+         minute of the month into the third field (0 through 44639). -->
+    <MsiDayIndex>$([MSBuild]::Subtract($(VersionDay), 1))</MsiDayIndex>
+    <MsiMinutesBeforeDay>$([MSBuild]::Multiply($(MsiDayIndex), 1440))</MsiMinutesBeforeDay>
+    <MsiMinutesBeforeHour>$([MSBuild]::Multiply($(VersionHour), 60))</MsiMinutesBeforeHour>
+    <MsiMinutesBeforeCurrentHour>$([MSBuild]::Add($(MsiMinutesBeforeDay), $(MsiMinutesBeforeHour)))</MsiMinutesBeforeCurrentHour>
+    <MsiMinuteOfMonth>$([MSBuild]::Add($(MsiMinutesBeforeCurrentHour), $(VersionMinute)))</MsiMinuteOfMonth>
+    <MsiProductVersion>$(VersionYear).$(VersionMonth).$(MsiMinuteOfMonth)</MsiProductVersion>
     
     <!-- 
       Disable automatic source revision info appending to InformationalVersion

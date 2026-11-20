@@ -56,6 +56,8 @@ The solution includes a WiX installer project. To build the MSI:
 2. Build the solution in Release mode
 3. Build the `IPPopper Installer` project
 
+The build assigns versions automatically. App files use `yy.MM.dd.rev` and the MSI uses `yy.MM.minuteOfMonth`, both based on UTC. Builds created in the same UTC minute share one MSI product version.
+
 ## Distribution
 
 ### Installer
