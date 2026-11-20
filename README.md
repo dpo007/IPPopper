@@ -27,11 +27,13 @@
   - Hide (keeps the app running in the system tray)
 
 ## Requirements
-- Windows 7+ (tray icon support)
-- **.NET 9 Desktop Runtime** must be installed on the target machine
-- Download from: https://dotnet.microsoft.com/download/dotnet/9.0
+- A [Windows version supported by .NET 10](https://learn.microsoft.com/dotnet/core/install/windows#supported-versions)
+- **.NET 10 Desktop Runtime** must be installed on the target machine
+- Download from: https://dotnet.microsoft.com/download/dotnet/10.0
 
 ## Development & Testing
+
+Install the **.NET 10 SDK** to build from source.
 
 ### Development/Debug Mode
 Run directly from Visual Studio or use:
@@ -46,7 +48,7 @@ To create the optimized Release executable:
 dotnet build -c Release
 ```
 
-**The output will be in:** `bin\Release\net9.0-windows\`
+**The output will be in:** `bin\Release\net10.0-windows\`
 
 ### Building the MSI Installer
 The solution includes a WiX installer project. To build the MSI:
@@ -113,12 +115,12 @@ Uninstall via Windows:
 - Control Panel → Programs and Features → `IPPopper` → Uninstall
 
 ## Technical Details
-- **Framework**: .NET 9 with WPF for UI
+- **Framework**: .NET 10 with WPF for UI
 - **Dependencies**: Notifications.Wpf.Core for toast notifications, System.Drawing.Common for icons
 - **Network Detection**:
   - **IP Addresses**: Enumerated from local network interfaces
   - **MAC Addresses**: Physical addresses from network adapters
 - **External/Public IP**: Retrieved by querying external services (e.g., `api.ipify.org`, `icanhazip.com`)
-- **Deployment**: Framework-dependent (requires .NET 9 Desktop Runtime)
+- **Deployment**: Framework-dependent (requires .NET 10 Desktop Runtime)
 - **Installer**: WiX Toolset v4-based MSI installer
 
