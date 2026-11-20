@@ -200,14 +200,33 @@ namespace IPPopper
         }
 
         /// <summary>
-        /// Disposes the system tray icon and shuts down the application.
+        /// Confirms a tray menu quit request before shutting down the application.
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">Event arguments.</param>
         private void Quit_Click(object? sender, EventArgs e)
         {
-            _notifyIcon?.Dispose();
-            Shutdown();
+            if (Windows.OfType<QuitConfirmationWindow>().FirstOrDefault() is { } openDialog)
+            {
+                openDialog.Activate();
+                return;
+            }
+
+            Window? owner = Windows.OfType<MainWindow>()
+                .FirstOrDefault(window => window.IsVisible && window.WindowState != WindowState.Minimized);
+            QuitConfirmationWindow dialog = new()
+            {
+                Owner = owner,
+                ShowInTaskbar = owner is null,
+                WindowStartupLocation = owner is null
+                    ? WindowStartupLocation.CenterScreen
+                    : WindowStartupLocation.CenterOwner
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                Shutdown();
+            }
         }
 
         /// <summary>
